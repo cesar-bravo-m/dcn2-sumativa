@@ -28,10 +28,16 @@ public class InventarioController {
     
     @GetMapping
     public ResponseEntity<Object> getAllInventarios() {
+        System.out.println("### 10");
         try {
+            System.out.println("### 11");
             Object inventarios = inventarioService.getAllInventarios();
+            System.out.println("### 12");
             return ResponseEntity.ok(inventarios);
         } catch (Exception e) {
+            System.out.println("### 13");
+            System.out.println(e);
+            System.out.println("### 14");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
