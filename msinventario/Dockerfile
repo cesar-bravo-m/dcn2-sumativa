@@ -8,6 +8,9 @@ COPY mvnw.cmd .
 COPY .mvn .mvn
 COPY pom.xml .
 
+# Make Maven wrapper executable
+RUN chmod +x ./mvnw
+
 # Download dependencies
 RUN ./mvnw dependency:go-offline -B
 
@@ -18,5 +21,5 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests
 
 # Run the application
-EXPOSE 8081
+EXPOSE 8082
 CMD ["java", "-jar", "target/msinventario-0.0.1-SNAPSHOT.jar"]
