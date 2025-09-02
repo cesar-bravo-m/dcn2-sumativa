@@ -42,7 +42,7 @@ services:
     depends_on:
       - msinventario
     environment:
-      - MICROSERVICE_INVENTARIO_URL=http://msinventario:8081/api/inventario
+      - MICROSERVICE_INVENTARIO_URL=http://msinventario:8082/api/inventario
     networks:
       - app-network
 
