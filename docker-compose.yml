@@ -21,7 +21,7 @@ services:
     container_name: msinventario_service
     restart: always
     ports:
-      - "9090:8082"
+      - "8082:8082"
     depends_on:
       - db
     environment:
