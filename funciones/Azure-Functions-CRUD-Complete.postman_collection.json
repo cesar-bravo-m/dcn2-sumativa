@@ -1,0 +1,529 @@
+{
+	"info": {
+		"_postman_id": "12345678-1234-1234-1234-123456789012",
+		"name": "Azure Functions CRUD - Bodegas & Productos",
+		"description": "Complete CRUD operations for Bodegas and Productos Azure Functions",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12345678"
+	},
+	"item": [
+		{
+			"name": "Bodegas",
+			"item": [
+				{
+					"name": "Get All Bodegas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/Bodegas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Bodegas"
+							]
+						},
+						"description": "Retrieve all bodegas from the database"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Bodega by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/Bodegas?id=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Bodegas"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "ID of the bodega to retrieve"
+								}
+							]
+						},
+						"description": "Retrieve a specific bodega by its ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Bodega",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Bodega Central\",\n    \"ubicacion\": \"Santiago, Chile\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Bodegas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Bodegas"
+							]
+						},
+						"description": "Create a new bodega with nombre and ubicacion"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Bodega",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Bodega Central Actualizada\",\n    \"ubicacion\": \"Valparaíso, Chile\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Bodegas?id=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Bodegas"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "ID of the bodega to update"
+								}
+							]
+						},
+						"description": "Update an existing bodega by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Bodega",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/Bodegas?id=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Bodegas"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "ID of the bodega to delete"
+								}
+							]
+						},
+						"description": "Delete a bodega by its ID"
+					},
+					"response": []
+				}
+			],
+			"description": "CRUD operations for Bodegas entity"
+		},
+		{
+			"name": "Productos",
+			"item": [
+				{
+					"name": "Get All Productos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/Productos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Productos"
+							]
+						},
+						"description": "Retrieve all productos from the database"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Producto by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/Productos?id=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Productos"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "ID of the producto to retrieve"
+								}
+							]
+						},
+						"description": "Retrieve a specific producto by its ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Producto",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Laptop Dell XPS 13\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Productos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Productos"
+							]
+						},
+						"description": "Create a new producto with nombre"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Producto",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Laptop Dell XPS 15 Actualizado\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Productos?id=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Productos"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "ID of the producto to update"
+								}
+							]
+						},
+						"description": "Update an existing producto by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Producto",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/Productos?id=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Productos"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "ID of the producto to delete"
+								}
+							]
+						},
+						"description": "Delete a producto by its ID"
+					},
+					"response": []
+				}
+			],
+			"description": "CRUD operations for Productos entity"
+		},
+		{
+			"name": "Test Scenarios",
+			"item": [
+				{
+					"name": "Create Multiple Bodegas",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Bodega Norte\",\n    \"ubicacion\": \"Antofagasta, Chile\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Bodegas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Bodegas"
+							]
+						},
+						"description": "Create additional bodega for testing"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Multiple Productos",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Mouse Logitech MX Master 3\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Productos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Productos"
+							]
+						},
+						"description": "Create additional producto for testing"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Invalid Bodega ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/Bodegas?id=999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Bodegas"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "999",
+									"description": "Non-existent ID to test error handling"
+								}
+							]
+						},
+						"description": "Test error handling for non-existent bodega"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Invalid Producto ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/Productos?id=999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Productos"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "999",
+									"description": "Non-existent ID to test error handling"
+								}
+							]
+						},
+						"description": "Test error handling for non-existent producto"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Invalid JSON - Bodega",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"\",\n    \"ubicacion\": \"Test Location\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Bodegas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Bodegas"
+							]
+						},
+						"description": "Test validation with empty nombre"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Invalid JSON - Producto",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Productos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Productos"
+							]
+						},
+						"description": "Test validation with empty nombre"
+					},
+					"response": []
+				}
+			],
+			"description": "Test scenarios for error handling and edge cases"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:7071",
+			"description": "Base URL for local Azure Functions development",
+			"type": "string"
+		}
+	]
+}
