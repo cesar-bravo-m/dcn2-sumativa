@@ -1,17 +1,54 @@
 services:
   db:
-    image: postgres:16
-    container_name: local-postgres
+    image: postgres:15
+    container_name: postgres_db
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: sumativa
+      POSTGRES_PASSWORD: 84oL4mK6cM8w7SK
+      POSTGRES_DB: duoc
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./initdb:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  msinventario:
+    build:
+      context: ./msinventario
+      dockerfile: Dockerfile
+    container_name: msinventario_service
+    restart: always
+    ports:
+      - "9090:8082"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/duoc
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=84oL4mK6cM8w7SK
+    networks:
+      - app-network
+
+  bff:
+    build:
+      context: ./bff
+      dockerfile: Dockerfile
+    container_name: bff_service
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - msinventario
+    environment:
+      - MICROSERVICE_INVENTARIO_URL=http://msinventario:8081/api/inventario
+    networks:
+      - app-network
 
 volumes:
-  pgdata:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge

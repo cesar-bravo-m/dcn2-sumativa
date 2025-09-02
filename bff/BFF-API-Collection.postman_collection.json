@@ -1,0 +1,373 @@
+{
+	"info": {
+		"_postman_id": "12345678-1234-1234-1234-123456789012",
+		"name": "BFF API - Bodegas, Productos and Inventario",
+		"description": "Collection for testing CRUD operations on Bodegas, Productos and Inventario through the BFF API. The BFF uses REST path parameters for all endpoints but forwards Bodegas/Productos to Azure functions with query parameters and Inventario to a microservice with path parameters.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Bodegas",
+			"item": [
+				{
+					"name": "Get All Bodegas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/bodegas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bodegas"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Bodega by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/bodegas/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bodegas",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Create New Bodega",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Nueva Bodega Test\",\n  \"ubicacion\": \"Calle Nueva 456\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bodegas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bodegas"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Bodega",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 1,\n  \"nombre\": \"Bodega Actualizada\",\n  \"ubicacion\": \"Ubicacion Actualizada 789\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bodegas/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bodegas",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Bodega",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/bodegas/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bodegas",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Productos",
+			"item": [
+				{
+					"name": "Get All Productos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/productos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"productos"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Producto by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/productos/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"productos",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Create New Producto",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Nuevo Producto Test\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/productos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"productos"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Producto",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 1,\n  \"nombre\": \"Producto Actualizado\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/productos/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"productos",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Producto",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/productos/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"productos",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Inventario",
+			"item": [
+				{
+					"name": "Get All Inventarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/inventario",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"inventario"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Inventario by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/inventario/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"inventario",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Create New Inventario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productoId\": 1,\n  \"bodegaId\": 1,\n  \"cantidad\": 50\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/inventario",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"inventario"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Inventario",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 1,\n  \"productoId\": 1,\n  \"bodegaId\": 1,\n  \"cantidad\": 75\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/inventario/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"inventario",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Inventario",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/inventario/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"inventario",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		}
+	]
+}

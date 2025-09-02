@@ -30,14 +30,27 @@ public class InventarioController {
     
     @PostMapping
     public ResponseEntity<Inventario> createInventario(@RequestBody InventarioRequestDTO inventarioDTO) {
+        System.out.println("##########");
+        System.out.println(inventarioDTO);
+        System.out.println(inventarioDTO.getProductoId());
+        System.out.println(inventarioDTO.getBodegaId());
+        System.out.println(inventarioDTO.getCantidad());
+        System.out.println("##########");
         try {
+            System.out.println("### 1");
             Inventario savedInventario = inventarioService.createFromDTO(inventarioDTO);
+            System.out.println("### 2");
             if (savedInventario != null) {
+                System.out.println("### 3");
                 return new ResponseEntity<>(savedInventario, HttpStatus.CREATED);
             } else {
+                System.out.println("### 4");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
+            System.out.println("######");
+            System.out.println(e);
+            System.out.println("######");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -31,15 +31,23 @@ public class InventarioService {
     }
     
     public Inventario createFromDTO(InventarioRequestDTO dto) {
+        System.out.println("Service: Looking for producto with ID: " + dto.getProductoId());
         Optional<Producto> producto = productoRepository.findById(dto.getProductoId());
+        System.out.println("Service: Producto found: " + producto.isPresent());
+        
+        System.out.println("Service: Looking for bodega with ID: " + dto.getBodegaId());
         Optional<Bodega> bodega = bodegaRepository.findById(dto.getBodegaId());
+        System.out.println("Service: Bodega found: " + bodega.isPresent());
         
         if (producto.isPresent() && bodega.isPresent()) {
+            System.out.println("Service: Both entities found, creating inventario");
             Inventario inventario = new Inventario();
             inventario.setProducto(producto.get());
             inventario.setBodega(bodega.get());
             inventario.setCantidad(dto.getCantidad());
             return inventarioRepository.save(inventario);
+        } else {
+            System.out.println("Service: One or both entities not found, returning null");
         }
         return null;
     }
