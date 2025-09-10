@@ -87,7 +87,7 @@ public class Function {
         }
         
         try {
-            Integer bodegaId = Integer.parseInt(idParam);
+            Long bodegaId = Long.parseLong(idParam);
             BodegaDTO bodega = databaseService.getBodegaById(bodegaId);
             
             if (bodega != null) {
@@ -151,7 +151,7 @@ public class Function {
         }
         
         try {
-            Integer bodegaId = Integer.parseInt(idParam);
+            Long bodegaId = Long.parseLong(idParam);
             Optional<String> body = request.getBody();
             
             if (!body.isPresent()) {
@@ -199,7 +199,7 @@ public class Function {
         }
         
         try {
-            Integer bodegaId = Integer.parseInt(idParam);
+            Long bodegaId = Long.parseLong(idParam);
             boolean deleted = databaseService.deleteBodega(bodegaId);
             
             if (deleted) {

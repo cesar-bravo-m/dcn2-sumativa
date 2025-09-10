@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class BodegaDTO {
     
     @JsonProperty("id")
-    private Integer id;
+    private Long id;
     
     @JsonProperty("nombre")
     private String nombre;
@@ -18,7 +18,7 @@ public class BodegaDTO {
     }
     
     // Constructor with all fields
-    public BodegaDTO(Integer id, String nombre, String ubicacion) {
+    public BodegaDTO(Long id, String nombre, String ubicacion) {
         this.id = id;
         this.nombre = nombre;
         this.ubicacion = ubicacion;
@@ -31,11 +31,11 @@ public class BodegaDTO {
     }
     
     // Getters and Setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
     
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
     

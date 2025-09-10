@@ -31,13 +31,13 @@ public class DatabaseService {
         return bodegas;
     }
     
-    public BodegaDTO getBodegaById(Integer bodegaId) throws SQLException {
+    public BodegaDTO getBodegaById(Long bodegaId) throws SQLException {
         String sql = "SELECT id, nombre, ubicacion FROM bodega WHERE id = ?";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, bodegaId);
+            stmt.setLong(1, bodegaId);
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
@@ -60,7 +60,7 @@ public class DatabaseService {
             
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                bodega.setId(rs.getInt("id"));
+                bodega.setId(rs.getLong("id"));
                 return bodega;
             }
         }
@@ -77,20 +77,20 @@ public class DatabaseService {
             
             stmt.setString(1, bodega.getNombre());
             stmt.setString(2, bodega.getUbicacion());
-            stmt.setInt(3, bodega.getId());
+            stmt.setLong(3, bodega.getId());
             
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         }
     }
     
-    public boolean deleteBodega(Integer bodegaId) throws SQLException {
+    public boolean deleteBodega(Long bodegaId) throws SQLException {
         String sql = "DELETE FROM bodega WHERE id = ?";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, bodegaId);
+            stmt.setLong(1, bodegaId);
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         }
@@ -98,7 +98,7 @@ public class DatabaseService {
     
     private BodegaDTO mapResultSetToBodega(ResultSet rs) throws SQLException {
         BodegaDTO bodega = new BodegaDTO();
-        bodega.setId(rs.getInt("id"));
+        bodega.setId(rs.getLong("id"));
         bodega.setNombre(rs.getString("nombre"));
         bodega.setUbicacion(rs.getString("ubicacion"));
         
