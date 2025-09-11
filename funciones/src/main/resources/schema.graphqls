@@ -1,0 +1,16 @@
+type Bodega {
+  id: ID!
+  nombre: String!
+  ubicacion: String!
+}
+
+type Query {
+  bodegas: [Bodega]
+  bodegaById(id: ID!): Bodega
+}
+
+type Mutation {
+  createBodega(nombre: String!, ubicacion: String!): Bodega
+  updateBodega(id: ID!, nombre: String!, ubicacion: String!): Bodega
+  deleteBodega(id: ID!): Boolean
+}

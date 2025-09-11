@@ -10,9 +10,9 @@ import java.util.List;
 
 public class DatabaseService {
     
-    private static final String DB_URL = "jdbc:postgresql://135.237.160.186:5432/duoc";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "84oL4mK6cM8w7SK";
+    private static final String DB_URL = "jdbc:postgresql://sibio.ddns.net:5432/postgres";
+    private static final String DB_USER = "nathan";
+    private static final String DB_PASSWORD = "lulu$2025";
     
     public List<BodegaDTO> getAllBodegas() throws SQLException {
         List<BodegaDTO> bodegas = new ArrayList<>();
