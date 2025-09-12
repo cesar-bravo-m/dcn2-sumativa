@@ -37,14 +37,17 @@ public class Function {
         GraphQL graphQL = bodegaGraphQL.getGraphQL();
 
         String query = request.getBody().get("query").toString();
-
+        System.out.println("#############################################");
+        System.out.println(query);
         ExecutionInput executionInput = ExecutionInput.newExecutionInput()
                 .query(query)
                 .build();
 
         Map<String, Object> result = graphQL.execute(executionInput).toSpecification();
-
+        System.out.println("#############################################");
+        System.out.println(result);
         return request.createResponseBuilder(HttpStatus.OK)
+                .header("Content-Type", "application/json")
                 .body(result)
                 .build();
     }

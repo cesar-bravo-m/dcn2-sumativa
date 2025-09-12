@@ -46,7 +46,8 @@ public class BodegaGraphQL {
                             bodega.setId(Long.parseLong(env.getArgument("id")));
                             bodega.setNombre(env.getArgument("nombre"));
                             bodega.setUbicacion(env.getArgument("ubicacion"));
-                            return databaseService.updateBodega(bodega);
+                            databaseService.updateBodega(bodega);
+                            return bodega;
                         })
                         .dataFetcher("deleteBodega", env -> {
                             Long id = Long.parseLong(env.getArgument("id"));
