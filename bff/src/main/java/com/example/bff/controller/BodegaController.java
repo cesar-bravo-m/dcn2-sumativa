@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.example.bff.dto.BodegaDto;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/api/bodegas")
@@ -22,7 +26,7 @@ public class BodegaController {
         this.webClient = builder.baseUrl("http://localhost:7071/api/graphqlBodegas?").build();
     }
 
-    // Obtener todas las bodegas
+    @GetMapping
     public List<BodegaDto> getAllBodegas() {
         String query = "{ bodegas { id nombre ubicacion } }";
 
@@ -45,7 +49,7 @@ public class BodegaController {
                 .toList();
     }
 
-    // Obtener una bodega por ID
+    @GetMapping("/{id}")
     public BodegaDto getBodegaById(Integer id) {
         String query = String.format("{ bodegaById(id: %d) { id nombre ubicacion } }", id);
 
@@ -67,7 +71,7 @@ public class BodegaController {
         );
     }
 
-    // Crear bodega (ejemplo con mutation)
+    @PostMapping
     public BodegaDto createBodega(BodegaDto bodegaDto) {
         String mutation = String.format(
                 "mutation { createBodega(nombre: \"%s\", ubicacion: \"%s\") { id nombre ubicacion } }",
