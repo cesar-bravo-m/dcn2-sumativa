@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "12345678-1234-1234-1234-123456789012",
-		"name": "BFF API - Bodegas, Productos and Inventario",
+		"_postman_id": "68668c1e-b847-40b4-bdf4-fef7aba57094",
+		"name": "DCN 2 Sumativa",
 		"description": "Collection for testing CRUD operations on Bodegas, Productos and Inventario through the BFF API. The BFF uses REST path parameters for all endpoints but forwards Bodegas/Productos to Azure functions with query parameters and Inventario to a microservice with path parameters.",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26434356"
 	},
 	"item": [
 		{
@@ -15,10 +16,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/bodegas",
+							"raw": "http://{{uri_base}}:8080/api/bodegas",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -26,7 +27,8 @@
 								"bodegas"
 							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Get Bodega by ID",
@@ -34,10 +36,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/bodegas/1",
+							"raw": "http://{{uri_base}}:8080/api/bodegas/1",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -46,7 +48,8 @@
 								"1"
 							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Create New Bodega",
@@ -63,10 +66,10 @@
 							"raw": "{\n  \"nombre\": \"Nueva Bodega Test\",\n  \"ubicacion\": \"Calle Nueva 456\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/bodegas",
+							"raw": "http://{{uri_base}}:8080/api/bodegas",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -74,7 +77,8 @@
 								"bodegas"
 							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Update Bodega",
@@ -91,10 +95,10 @@
 							"raw": "{\n  \"id\": 1,\n  \"nombre\": \"Bodega Actualizada\",\n  \"ubicacion\": \"Ubicacion Actualizada 789\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/bodegas/1",
+							"raw": "http://{{uri_base}}:8080/api/bodegas/1",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -103,7 +107,8 @@
 								"1"
 							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Delete Bodega",
@@ -111,10 +116,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/bodegas/1",
+							"raw": "http://{{uri_base}}:8080/api/bodegas/1",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -123,7 +128,8 @@
 								"1"
 							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
 		},
@@ -136,10 +142,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/productos",
+							"raw": "http://{{uri_base}}:8080/api/productos",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -147,7 +153,8 @@
 								"productos"
 							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Get Producto by ID",
@@ -155,10 +162,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/productos/1",
+							"raw": "http://{{uri_base}}:8080/api/productos/1",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -167,7 +174,8 @@
 								"1"
 							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Create New Producto",
@@ -184,10 +192,10 @@
 							"raw": "{\n  \"nombre\": \"Nuevo Producto Test\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/productos",
+							"raw": "http://{{uri_base}}:8080/api/productos",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -195,7 +203,8 @@
 								"productos"
 							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Update Producto",
@@ -212,10 +221,10 @@
 							"raw": "{\n  \"id\": 1,\n  \"nombre\": \"Producto Actualizado\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/productos/1",
+							"raw": "http://{{uri_base}}:8080/api/productos/1",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -224,7 +233,8 @@
 								"1"
 							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Delete Producto",
@@ -232,10 +242,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/productos/1",
+							"raw": "http://{{uri_base}}:8080/api/productos/1",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -244,7 +254,8 @@
 								"1"
 							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
 		},
@@ -257,10 +268,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/inventario",
+							"raw": "http://{{uri_base}}:8080/api/inventario",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -268,7 +279,8 @@
 								"inventario"
 							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Get Inventario by ID",
@@ -276,10 +288,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/inventario/1",
+							"raw": "http://{{uri_base}}:8080/api/inventario/1",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -288,7 +300,8 @@
 								"1"
 							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Create New Inventario",
@@ -305,10 +318,10 @@
 							"raw": "{\n  \"productoId\": 1,\n  \"bodegaId\": 1,\n  \"cantidad\": 50\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/inventario",
+							"raw": "http://{{uri_base}}:8080/api/inventario",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -316,7 +329,8 @@
 								"inventario"
 							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Update Inventario",
@@ -333,10 +347,10 @@
 							"raw": "{\n  \"id\": 1,\n  \"productoId\": 1,\n  \"bodegaId\": 1,\n  \"cantidad\": 75\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/inventario/1",
+							"raw": "http://{{uri_base}}:8080/api/inventario/1",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -345,7 +359,8 @@
 								"1"
 							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Delete Inventario",
@@ -353,10 +368,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/inventario/1",
+							"raw": "http://{{uri_base}}:8080/api/inventario/1",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{uri_base}}"
 							],
 							"port": "8080",
 							"path": [
@@ -365,9 +380,38 @@
 								"1"
 							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "uri_base",
+			"value": ""
 		}
 	]
 }
