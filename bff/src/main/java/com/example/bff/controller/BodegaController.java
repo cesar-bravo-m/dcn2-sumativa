@@ -1,13 +1,14 @@
 package com.example.bff.controller;
 
-import org.springframework.http.HttpHeaders;
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.MediaType;
-import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties.Data;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,14 +16,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.example.bff.dto.BodegaDto;
 import com.example.bff.dto.RespuestaBodegaPorId;
 import com.example.bff.dto.RespuestaBodegas;
-
-import jakarta.websocket.server.PathParam;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
 
 
 
@@ -34,7 +27,7 @@ public class BodegaController {
     private final WebClient webClient;
 
     public BodegaController(WebClient.Builder builder) {
-        this.webClient = builder.baseUrl("http://localhost:7071/api/graphqlBodegas?").build();
+        this.webClient = builder.baseUrl("https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/graphqlBodegas?").build();
     }
 
     @GetMapping
