@@ -30,55 +30,35 @@ public class ProductoController {
     
     @GetMapping
     public ResponseEntity<List<ProductoDto>> getAllProductos() {
-        try {
-            List<ProductoDto> productos = productoService.getAllProductos();
-            return ResponseEntity.ok(productos);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        List<ProductoDto> productos = productoService.getAllProductos();
+        return ResponseEntity.ok(productos);
     }
     
     @GetMapping("/{id}")
     public ResponseEntity<ProductoDto> getProductoById(@PathVariable Integer id) {
-        try {
-            ProductoDto producto = productoService.getProductoById(id);
-            if (producto != null) {
-                return ResponseEntity.ok(producto);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        ProductoDto producto = productoService.getProductoById(id);
+        if (producto != null) {
+            return ResponseEntity.ok(producto);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
     
     @PostMapping
     public ResponseEntity<ProductoDto> createProducto(@RequestBody ProductoDto productoDto) {
-        try {
-            ProductoDto createdProducto = productoService.createProducto(productoDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdProducto);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        ProductoDto createdProducto = productoService.createProducto(productoDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdProducto);
     }
     
     @PutMapping("/{id}")
     public ResponseEntity<ProductoDto> updateProducto(@PathVariable Integer id, @RequestBody ProductoDto productoDto) {
-        try {
-            ProductoDto updatedProducto = productoService.updateProducto(id, productoDto);
-            return ResponseEntity.ok(updatedProducto);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        ProductoDto updatedProducto = productoService.updateProducto(id, productoDto);
+        return ResponseEntity.ok(updatedProducto);
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProducto(@PathVariable Integer id) {
-        try {
-            productoService.deleteProducto(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        productoService.deleteProducto(id);
+        return ResponseEntity.noContent().build();
     }
 }
