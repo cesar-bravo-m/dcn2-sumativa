@@ -15,8 +15,8 @@ public class DatabaseService {
     private static final String DB_PASSWORD = "84oL4mK6cM8w7SK";
     
     public List<CategoriaDTO> getAllCategorias() throws SQLException {
+
         List<CategoriaDTO> categorias = new ArrayList<>();
-        
         String sql = "SELECT id, nombre FROM categoria";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);

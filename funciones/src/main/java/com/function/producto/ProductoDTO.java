@@ -9,7 +9,11 @@ public class ProductoDTO {
     
     @JsonProperty("nombre")
     private String nombre;
-    
+
+    @JsonProperty("categoria")
+    private Long categoria;
+
+
     public ProductoDTO() {
     }
     
@@ -45,4 +49,13 @@ public class ProductoDTO {
                 ", nombre='" + nombre + '\'' +
                 '}';
     }
+
+    public Long getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Long categoria) {
+        this.categoria = categoria;
+    }
+
 }

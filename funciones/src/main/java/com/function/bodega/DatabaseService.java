@@ -77,7 +77,7 @@ public class DatabaseService {
             
             stmt.setString(1, bodega.getNombre());
             stmt.setString(2, bodega.getUbicacion());
-            stmt.setLong(3, bodega.getId());
+            stmt.setLong(4, bodega.getId());
             
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;

@@ -17,7 +17,7 @@ public class DatabaseService {
     public List<ProductoDTO> getAllProductos() throws SQLException {
         List<ProductoDTO> productos = new ArrayList<>();
         
-        String sql = "SELECT id, nombre FROM producto ORDER BY id";
+        String sql = "SELECT id, nombre, categoria FROM producto ORDER BY id";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -32,7 +32,7 @@ public class DatabaseService {
     }
     
     public ProductoDTO getProductoById(Integer productoId) throws SQLException {
-        String sql = "SELECT id, nombre FROM producto WHERE id = ?";
+        String sql = "SELECT id, nombre, categoria FROM producto WHERE id = ?";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -51,7 +51,7 @@ public class DatabaseService {
 
     
     public ProductoDTO createProducto(ProductoDTO producto) throws SQLException {
-        String sql = "INSERT INTO producto (nombre) VALUES (?) RETURNING id";
+        String sql = "INSERT INTO producto (nombre, categoria) VALUES (?, ?) RETURNING id";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -69,13 +69,14 @@ public class DatabaseService {
     }
     
     public boolean updateProducto(ProductoDTO producto) throws SQLException {
-        String sql = "UPDATE producto SET nombre = ? WHERE id = ?";
+        String sql = "UPDATE producto SET nombre = ?, categoria = ? WHERE id = ?";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, producto.getNombre());
-            stmt.setInt(2, producto.getId());
+            stmt.setLong(2, producto.getCategoria());
+            stmt.setInt(3, producto.getId());
             
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
@@ -98,6 +99,7 @@ public class DatabaseService {
         ProductoDTO producto = new ProductoDTO();
         producto.setId(rs.getInt("id"));
         producto.setNombre(rs.getString("nombre"));
+        producto.setCategoria(rs.getLong("categoria"));
         
         return producto;
     }

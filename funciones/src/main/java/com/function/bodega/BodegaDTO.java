@@ -59,4 +59,5 @@ public class BodegaDTO {
                 ", ubicacion='" + ubicacion + '\'' +
                 '}';
     }
+
 }
