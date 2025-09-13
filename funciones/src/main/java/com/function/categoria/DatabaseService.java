@@ -1,4 +1,4 @@
-package com.function.bodega;
+package com.function.categoria;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,110 +14,107 @@ public class DatabaseService {
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "84oL4mK6cM8w7SK";
     
-    public List<BodegaDTO> getAllBodegas() throws SQLException {
-        List<BodegaDTO> bodegas = new ArrayList<>();
+    public List<CategoriaDTO> getAllCategorias() throws SQLException {
+        List<CategoriaDTO> categorias = new ArrayList<>();
         
-        String sql = "SELECT id, nombre, ubicacion FROM bodega";
+        String sql = "SELECT id, nombre FROM categoria";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                bodegas.add(mapResultSetToBodega(rs));
+                categorias.add(mapResultSetToCategoria(rs));
             }
         }
         
-        return bodegas;
+        return categorias;
     }
     
-    public BodegaDTO getBodegaById(Long bodegaId) throws SQLException {
-        String sql = "SELECT id, nombre, ubicacion FROM bodega WHERE id = ?";
+    public CategoriaDTO getCategoriaById(Long categoriaId) throws SQLException {
+        String sql = "SELECT id, nombre FROM categoria WHERE id = ?";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setLong(1, bodegaId);
+            stmt.setLong(1, categoriaId);
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
-                return mapResultSetToBodega(rs);
+                return mapResultSetToCategoria(rs);
             }
         }
         
         return null;
     }
     
-    public BodegaDTO createBodega(BodegaDTO bodega) throws SQLException {
-        String sql = "INSERT INTO bodega (nombre, ubicacion) " +
+    public CategoriaDTO createCategoria(CategoriaDTO categoria) throws SQLException {
+        String sql = "INSERT INTO categoria (nombre) " +
                     "VALUES (?, ?) RETURNING id";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setString(1, bodega.getNombre());
-            stmt.setString(2, bodega.getUbicacion());
+            stmt.setString(1, categoria.getNombre());
             
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                bodega.setId(rs.getLong("id"));
-                return bodega;
+                categoria.setId(rs.getLong("id"));
+                return categoria;
             }
         }
         
         return null;
     }
     
-    public boolean updateBodega(BodegaDTO bodega) throws SQLException {
-        String sql = "UPDATE bodega SET nombre = ?, ubicacion = ? " +
+    public boolean updateCategoria(CategoriaDTO categoria) throws SQLException {
+        String sql = "UPDATE categoria SET nombre = ? = ? " +
                     "WHERE id = ?";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setString(1, bodega.getNombre());
-            stmt.setString(2, bodega.getUbicacion());
-            stmt.setLong(3, bodega.getId());
+            stmt.setString(1, categoria.getNombre());
+            stmt.setLong(2, categoria.getId());
             
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         }
     }
     
-    public boolean deleteBodega(Long bodegaId) throws SQLException {
+    public boolean deleteCategoria(Long categoriaId) throws SQLException {
 
         // eliminando inventario asociado
-        this.deleteInventario(bodegaId);
+        this.deleteInventario(categoriaId);
 
-        String sql = "DELETE FROM bodega WHERE id = ?";
+        String sql = "DELETE FROM categoria WHERE id = ?";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setLong(1, bodegaId);
+            stmt.setLong(1, categoriaId);
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         }
     }
     
-    private void deleteInventario(Long bodegaId) throws SQLException {
-        String sql = "DELETE FROM inventario WHERE bodega_id = ?";
+    private void deleteInventario(Long categoriaId) throws SQLException {
+        String sql = "DELETE FROM inventario WHERE categoria_id = ?";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setLong(1, bodegaId);
+            stmt.setLong(1, categoriaId);
             stmt.executeUpdate();
         }
     }
 
-    private BodegaDTO mapResultSetToBodega(ResultSet rs) throws SQLException {
-        BodegaDTO bodega = new BodegaDTO();
-        bodega.setId(rs.getLong("id"));
-        bodega.setNombre(rs.getString("nombre"));
-        bodega.setUbicacion(rs.getString("ubicacion"));
+    private CategoriaDTO mapResultSetToCategoria(ResultSet rs) throws SQLException {
+        CategoriaDTO categoria = new CategoriaDTO();
+        categoria.setId(rs.getLong("id"));
+        categoria.setNombre(rs.getString("nombre"));
         
-        return bodega;
+        return categoria;
     }
     
     public boolean testConnection() {
