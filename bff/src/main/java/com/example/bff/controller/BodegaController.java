@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,6 +77,25 @@ public class BodegaController {
         return "Bodega insertada, Ok.";
     }
 
+    @DeleteMapping("/{id}")
+    public String deleteBodega(@PathVariable Long id) {
+        String mutation = String.format(
+                "mutation { deleteBodega(id: \"%d\") }",
+                id
+        );
+
+        System.out.println("#########################################");
+        System.out.println(mutation);
+
+        webClient.post()
+                .bodyValue(Map.of("query", mutation))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .block();
+
+        return "Bodega eliminada, Ok.";
+    }
+
     @PutMapping("/{id}")
     public String updateBodega(@PathVariable Long id, @RequestBody BodegaDto bodegaDto) {
 
@@ -91,17 +111,11 @@ public class BodegaController {
                 id, bodegaDto.getNombre(), bodegaDto.getUbicacion()
         );
 
-        System.out.println("########################################################");
-        System.out.println(mutation);
-
         Map<String, BodegaDto> response = webClient.post()
                 .bodyValue(Map.of("query", mutation))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, BodegaDto>>() {})
                 .block();
-
-        System.out.println("#########################################");
-        System.out.println(response);
 
         return "Bodega actualizada, OK.";
     }
