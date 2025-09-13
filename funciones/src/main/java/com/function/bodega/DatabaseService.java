@@ -10,9 +10,9 @@ import java.util.List;
 
 public class DatabaseService {
     
-    private static final String DB_URL = "jdbc:postgresql://20.81.136.128:5432/duoc";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "84oL4mK6cM8w7SK";
+    private static final String DB_URL = "jdbc:postgresql://sibio.ddns.net:5432/postgres";
+    private static final String DB_USER = "nathan";
+    private static final String DB_PASSWORD = "lulu$2025";
     
     public List<BodegaDTO> getAllBodegas() throws SQLException {
         List<BodegaDTO> bodegas = new ArrayList<>();
@@ -20,9 +20,9 @@ public class DatabaseService {
         String sql = "SELECT id, nombre, ubicacion FROM bodega";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+
             while (rs.next()) {
                 bodegas.add(mapResultSetToBodega(rs));
             }
@@ -85,6 +85,10 @@ public class DatabaseService {
     }
     
     public boolean deleteBodega(Long bodegaId) throws SQLException {
+
+        // eliminando inventario asociado
+        this.deleteInventario(bodegaId);
+
         String sql = "DELETE FROM bodega WHERE id = ?";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
@@ -96,6 +100,17 @@ public class DatabaseService {
         }
     }
     
+    private void deleteInventario(Long bodegaId) throws SQLException {
+        String sql = "DELETE FROM inventario WHERE bodega_id = ?";
+        
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setLong(1, bodegaId);
+            int rowsAffected = stmt.executeUpdate();
+        }
+    }
+
     private BodegaDTO mapResultSetToBodega(ResultSet rs) throws SQLException {
         BodegaDTO bodega = new BodegaDTO();
         bodega.setId(rs.getLong("id"));
