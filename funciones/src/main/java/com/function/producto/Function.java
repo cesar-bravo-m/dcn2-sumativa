@@ -79,6 +79,8 @@ public class Function {
             try {
                 Integer productoId = Integer.parseInt(idParam);
                 ProductoDTO producto = databaseService.getProductoById(productoId);
+
+                System.out.println(producto);
                 
                 if (producto != null) {
                     String jsonResponse = objectMapper.writeValueAsString(producto);
