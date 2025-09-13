@@ -13,24 +13,20 @@ public class BodegaDTO {
     @JsonProperty("ubicacion")
     private String ubicacion;
     
-    // Default constructor
     public BodegaDTO() {
     }
     
-    // Constructor with all fields
     public BodegaDTO(Long id, String nombre, String ubicacion) {
         this.id = id;
         this.nombre = nombre;
         this.ubicacion = ubicacion;
     }
     
-    // Constructor without id (for creation)
     public BodegaDTO(String nombre, String ubicacion) {
         this.nombre = nombre;
         this.ubicacion = ubicacion;
     }
     
-    // Getters and Setters
     public Long getId() {
         return id;
     }
