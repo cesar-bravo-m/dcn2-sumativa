@@ -57,6 +57,7 @@ public class DatabaseService {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, producto.getNombre());
+            stmt.setLong(2, producto.getCategoria());
             
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {

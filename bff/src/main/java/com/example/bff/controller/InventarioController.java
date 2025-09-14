@@ -28,16 +28,11 @@ public class InventarioController {
     
     @GetMapping
     public ResponseEntity<Object> getAllInventarios() {
-        System.out.println("### 10");
         try {
-            System.out.println("### 11");
             Object inventarios = inventarioService.getAllInventarios();
-            System.out.println("### 12");
             return ResponseEntity.ok(inventarios);
         } catch (Exception e) {
-            System.out.println("### 13");
             System.out.println(e);
-            System.out.println("### 14");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -67,11 +62,14 @@ public class InventarioController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<InventarioDto> updateInventario(@PathVariable Integer id, @RequestBody InventarioDto inventarioDto) {
+    public ResponseEntity<String> updateInventario(@PathVariable Integer id, @RequestBody InventarioDto inventarioDto) {
         try {
-            InventarioDto updatedInventario = inventarioService.updateInventario(id, inventarioDto);
-            return ResponseEntity.ok(updatedInventario);
+            System.out.println("### 1");
+            boolean updated = inventarioService.updateInventario(id, inventarioDto);
+            System.out.println("### 2:"+updated);
+            return ResponseEntity.ok(updated ? "Inventario actualizado exitosamente" : "Inventario no encontrado");
         } catch (Exception e) {
+            System.out.println("### 3:"+e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -79,6 +77,7 @@ public class InventarioController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteInventario(@PathVariable Integer id) {
         try {
+            System.out.println("### 1");
             inventarioService.deleteInventario(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {

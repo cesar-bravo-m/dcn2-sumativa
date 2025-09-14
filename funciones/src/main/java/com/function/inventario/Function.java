@@ -147,52 +147,67 @@ public class Function {
     
     private HttpResponseMessage handlePost(HttpRequestMessage<Optional<String>> request, 
                                          ExecutionContext context) throws Exception {
+        System.out.println("### 1");
         Optional<String> body = request.getBody();
+        System.out.println("### 2");
         if (!body.isPresent()) {
+            System.out.println("### 3");
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
                 .body("Se requiere cuerpo de solicitud")
                 .build();
         }
+        System.out.println("### 4");
         
         try {
             InventarioDTO inventario = objectMapper.readValue(body.get(), InventarioDTO.class);
+            System.out.println("### 5");
             
             // Validate required fields
             if (inventario.getProductoId() == null) {
+                System.out.println("### 6");
                 return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
                     .body("productoId es requerido")
                     .build();
             }
             if (inventario.getBodegaId() == null) {
+                System.out.println("### 7");
                 return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
                     .body("bodegaId es requerido")
                     .build();
             }
             if (inventario.getCantidad() == null) {
+                System.out.println("### 8");
                 return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
                     .body("cantidad es requerida")
                     .build();
             }
             if (inventario.getCantidad() < 0) {
+                System.out.println("### 9");
                 return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
                     .body("cantidad no puede ser negativa")
                     .build();
             }
             
+            System.out.println("### 10");
             InventarioDTO createdInventario = databaseService.createInventario(inventario);
+            System.out.println("### 11");
             
             if (createdInventario != null) {
+                System.out.println("### 12");
                 String jsonResponse = objectMapper.writeValueAsString(createdInventario);
+                System.out.println("### 13");
                 return request.createResponseBuilder(HttpStatus.CREATED)
                     .header("Content-Type", "application/json")
                     .body(jsonResponse)
                     .build();
             } else {
+                System.out.println("### 14");
                 return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al crear inventario")
                     .build();
             }
         } catch (Exception e) {
+            System.out.println("### 15");
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
                 .body("Formato JSON inválido: " + e.getMessage())
                 .build();

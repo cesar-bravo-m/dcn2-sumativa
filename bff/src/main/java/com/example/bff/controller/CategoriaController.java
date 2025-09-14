@@ -2,6 +2,7 @@ package com.example.bff.controller;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,45 +15,47 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.example.bff.dto.BodegaDto;
-import com.example.bff.dto.RespuestaBodegaPorId;
-import com.example.bff.dto.RespuestaBodegas;
+import com.example.bff.dto.CategoriaDto;
+import com.example.bff.dto.RespuestaCategoriaPorId;
+import com.example.bff.dto.RespuestaCategorias;
 
 
 
 @RestController
-@RequestMapping("/api/bodegas")
+@RequestMapping("/api/categorias")
 @CrossOrigin(origins = "*")
-public class BodegaController {
+public class CategoriaController {
 
     private final WebClient webClient;
+    private final String azureFunctionUrl;
 
-    public BodegaController(WebClient.Builder builder) {
-        this.webClient = builder.baseUrl("http://localhost:7071/api/graphqlBodegas?").build();
+    public CategoriaController(WebClient.Builder builder, @Value("${azure.functions.categorias.url}") String azureFunctionUrl) {
+        this.webClient = builder.baseUrl(azureFunctionUrl).build();
+        this.azureFunctionUrl = azureFunctionUrl;
     }
 
     @GetMapping
-    public Map<String, RespuestaBodegas> getAllBodegas() {
-        String query = "{ bodegas { id nombre ubicacion } }";
+    public Map<String, RespuestaCategorias> getAllCategorias() {
+        String query = "{ categoria { id nombre } }";
 
-        Map<String, RespuestaBodegas> response = webClient.post()
+        Map<String, RespuestaCategorias> response = webClient.post()
                 .bodyValue(Map.of("query", query))
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, RespuestaBodegas>>() {})
+                .bodyToMono(new ParameterizedTypeReference<Map<String, RespuestaCategorias>>() {})
                 .block();
 
         return response;
     }
 
     @GetMapping("/{id}")
-    public Map<String, RespuestaBodegaPorId> getBodegaById(@PathVariable Integer id) {
-        String query = "{ bodegaById(id: "+id+") { id nombre ubicacion } }";
+    public Map<String, RespuestaCategoriaPorId> getCategoriaById(@PathVariable Integer id) {
+        String query = "{ categoriaById(id: "+id+") { id nombre } }";
         System.out.println(query);
 
-        Map<String, RespuestaBodegaPorId> response = webClient.post()
+        Map<String, RespuestaCategoriaPorId> response = webClient.post()
                 .bodyValue(Map.of("query", query))
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, RespuestaBodegaPorId>>() {})
+                .bodyToMono(new ParameterizedTypeReference<Map<String, RespuestaCategoriaPorId>>() {})
                 .block();
 
         System.out.println("#########################################");
@@ -62,10 +65,10 @@ public class BodegaController {
     }
 
     @PostMapping
-    public String createBodega(@RequestBody BodegaDto bodegaDto) {
+    public String createCategoria(@RequestBody CategoriaDto categoriaDto) {
         String mutation = String.format(
-                "mutation { createBodega(nombre: \"%s\", ubicacion: \"%s\") { id nombre ubicacion } }",
-                bodegaDto.getNombre(), bodegaDto.getUbicacion()
+                "mutation { createCategoria(nombre: \"%s\") { id nombre } }",
+                categoriaDto.getNombre()
         );
 
         webClient.post()
@@ -74,13 +77,13 @@ public class BodegaController {
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                 .block();
 
-        return "Bodega insertada, Ok.";
+        return "Categoria insertada, Ok.";
     }
 
     @DeleteMapping("/{id}")
-    public String deleteBodega(@PathVariable Long id) {
+    public String deleteCategoria(@PathVariable Long id) {
         String mutation = String.format(
-                "mutation { deleteBodega(id: \"%d\") }",
+                "mutation { deleteCategoria(id: \"%d\") }",
                 id
         );
 
@@ -93,31 +96,29 @@ public class BodegaController {
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                 .block();
 
-        return "Bodega eliminada, Ok.";
+        return "Categoria eliminada, Ok.";
     }
 
     @PutMapping("/{id}")
-    public String updateBodega(@PathVariable Long id, @RequestBody BodegaDto bodegaDto) {
-
+    public String updateCategoria(@PathVariable Long id, @RequestBody CategoriaDto categoriaDto) {
         String mutation = String.format(
                 "mutation {\r\n" + //
-                                                "    updateBodega(id: %d, nombre: \"%s\", ubicacion: \"%s\") {\r\n" + //
+                                                "    updateCategoria(id: %d, nombre: \"%s\") {\r\n" + //
                                                 "        id\r\n" + //
                                                 "        nombre\r\n" + //
-                                                "        ubicacion\r\n" + //
                                                 "    }\r\n" + //
                                                 "}\r\n" + //
                                                 "",
-                id, bodegaDto.getNombre(), bodegaDto.getUbicacion()
+                id, categoriaDto.getNombre()
         );
 
-        Map<String, BodegaDto> response = webClient.post()
+        Map<String, CategoriaDto> response = webClient.post()
                 .bodyValue(Map.of("query", mutation))
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, BodegaDto>>() {})
+                .bodyToMono(new ParameterizedTypeReference<Map<String, CategoriaDto>>() {})
                 .block();
 
-        return "Bodega actualizada, OK.";
+        return "Categoria actualizada, OK.";
     }
 
 

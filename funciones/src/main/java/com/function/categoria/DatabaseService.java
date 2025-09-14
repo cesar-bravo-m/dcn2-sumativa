@@ -22,10 +22,11 @@ public class DatabaseService {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                categorias.add(mapResultSetToCategoria(rs));
-            }
+                while (rs.next()) {
+                    categorias.add(mapResultSetToCategoria(rs));
+                }
+        } catch (Exception e) {
+            System.out.println("### Error:"+e);
         }
         
         return categorias;
@@ -50,11 +51,12 @@ public class DatabaseService {
     
     public CategoriaDTO createCategoria(CategoriaDTO categoria) throws SQLException {
         String sql = "INSERT INTO categoria (nombre) " +
-                    "VALUES (?, ?) RETURNING id";
+                    "VALUES (?) RETURNING id";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
+            System.out.println("=== 1");
             stmt.setString(1, categoria.getNombre());
             
             ResultSet rs = stmt.executeQuery();
@@ -68,7 +70,7 @@ public class DatabaseService {
     }
     
     public boolean updateCategoria(CategoriaDTO categoria) throws SQLException {
-        String sql = "UPDATE categoria SET nombre = ? = ? " +
+        String sql = "UPDATE categoria SET nombre = ? " +
                     "WHERE id = ?";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
@@ -83,9 +85,6 @@ public class DatabaseService {
     }
     
     public boolean deleteCategoria(Long categoriaId) throws SQLException {
-
-        // eliminando inventario asociado
-        this.deleteInventario(categoriaId);
 
         String sql = "DELETE FROM categoria WHERE id = ?";
         

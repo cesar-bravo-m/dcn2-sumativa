@@ -16,12 +16,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/bodegas",
+							"raw": "http://{{uri_base}}/api/bodegas",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"bodegas"
@@ -36,12 +35,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/bodegas/1",
+							"raw": "http://{{uri_base}}/api/bodegas/1",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"bodegas",
@@ -66,12 +64,11 @@
 							"raw": "{\n  \"nombre\": \"Nueva Bodega Test\",\n  \"ubicacion\": \"Calle Nueva 456\"\n}"
 						},
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/bodegas",
+							"raw": "http://{{uri_base}}/api/bodegas",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"bodegas"
@@ -95,12 +92,11 @@
 							"raw": "{\n  \"id\": 1,\n  \"nombre\": \"Bodega Actualizada\",\n  \"ubicacion\": \"Ubicacion Actualizada 789\"\n}"
 						},
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/bodegas/1",
+							"raw": "http://{{uri_base}}/api/bodegas/1",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"bodegas",
@@ -116,12 +112,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/bodegas/1",
+							"raw": "http://{{uri_base}}/api/bodegas/1",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"bodegas",
@@ -142,12 +137,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/productos",
+							"raw": "http://{{uri_base}}/api/productos",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"productos"
@@ -162,12 +156,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/productos/1",
+							"raw": "http://{{uri_base}}/api/productos/1",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"productos",
@@ -189,15 +182,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"nombre\": \"Nuevo Producto Test\"\n}"
+							"raw": "{\n  \"nombre\": \"Nuevo Producto Test\",\n  \"categoria\": 1\n}"
 						},
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/productos",
+							"raw": "http://{{uri_base}}/api/productos",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"productos"
@@ -218,15 +210,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\": 1,\n  \"nombre\": \"Producto Actualizado\"\n}"
+							"raw": "{\n  \"id\": 1,\n  \"nombre\": \"Producto Actualizado\",\n  \"categoria\": 1\n}"
 						},
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/productos/1",
+							"raw": "http://{{uri_base}}/api/productos/1",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"productos",
@@ -242,12 +233,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/productos/1",
+							"raw": "http://{{uri_base}}/api/productos/1",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"productos",
@@ -268,12 +258,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/inventario",
+							"raw": "http://{{uri_base}}/api/inventario",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"inventario"
@@ -288,16 +277,20 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/inventario/1",
+							"raw": "http://{{uri_base}}/api/inventario?id=2",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
-								"inventario",
-								"1"
+								"inventario"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "2"
+								}
 							]
 						}
 					},
@@ -318,12 +311,11 @@
 							"raw": "{\n  \"productoId\": 1,\n  \"bodegaId\": 1,\n  \"cantidad\": 50\n}"
 						},
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/inventario",
+							"raw": "http://{{uri_base}}/api/inventario",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"inventario"
@@ -344,19 +336,18 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\": 1,\n  \"productoId\": 1,\n  \"bodegaId\": 1,\n  \"cantidad\": 75\n}"
+							"raw": "{\n  \"id\": 8,\n  \"productoId\": 2,\n  \"bodegaId\": 2,\n  \"cantidad\": 75\n}"
 						},
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/inventario/1",
+							"raw": "http://{{uri_base}}/api/inventario/8",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"inventario",
-								"1"
+								"8"
 							]
 						}
 					},
@@ -368,16 +359,15 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://{{uri_base}}:8080/api/inventario/1",
+							"raw": "http://{{uri_base}}/api/inventario/8",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"inventario",
-								"1"
+								"8"
 							]
 						}
 					},

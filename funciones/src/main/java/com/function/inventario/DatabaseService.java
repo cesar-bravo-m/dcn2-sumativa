@@ -101,6 +101,8 @@ public class DatabaseService {
                 inventario.setId(rs.getInt("id"));
                 return inventario;
             }
+        } catch (Exception e) {
+            System.out.println("***Error:"+e);
         }
         
         return null;
@@ -112,13 +114,18 @@ public class DatabaseService {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
+            System.out.println("### 1");
             stmt.setInt(1, inventario.getProductoId());
+            System.out.println("### 2:"+inventario.getProductoId());
             stmt.setInt(2, inventario.getBodegaId());
+            System.out.println("### 3:"+inventario.getBodegaId());
             stmt.setInt(3, inventario.getCantidad());
+            System.out.println("### 4:"+inventario.getCantidad());
             stmt.setInt(4, inventario.getId());
+            System.out.println("### 5:"+inventario.getId());
+            stmt.executeUpdate();
             
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            return true;
         }
     }
     

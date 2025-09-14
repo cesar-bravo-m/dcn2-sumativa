@@ -21,14 +21,14 @@ public class CategoriaGraphQL {
      private void init() {
         // 1. Cargar el archivo schema.graphqls desde /resources
         InputStreamReader reader = new InputStreamReader(
-                getClass().getResourceAsStream("/schema.graphqls.categoria")
+                getClass().getResourceAsStream("/categoria.graphqls")
         );
         TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(reader);
 
         // 2. Definir resolvers (queries y mutations)
         RuntimeWiring wiring = RuntimeWiring.newRuntimeWiring()
                 .type("Query", builder -> builder
-                        .dataFetcher("categorias", env -> databaseService.getAllCategorias())
+                        .dataFetcher("categoria", env -> databaseService.getAllCategorias())
                         .dataFetcher("categoriaById", env -> {
                             Long id = Long.parseLong(env.getArgument("id"));
                             return databaseService.getCategoriaById(id);
@@ -36,8 +36,11 @@ public class CategoriaGraphQL {
                 )
                 .type("Mutation", builder -> builder
                         .dataFetcher("createCategoria", env -> {
+                            System.out.println("=== 1");
                             CategoriaDTO categoria = new CategoriaDTO();
+                            System.out.println("=== 2");
                             categoria.setNombre(env.getArgument("nombre"));
+                            System.out.println("=== 3:"+env.getArgument("nombre"));
                             return databaseService.createCategoria(categoria);
                         })
                         .dataFetcher("updateCategoria", env -> {
