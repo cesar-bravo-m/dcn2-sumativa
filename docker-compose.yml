@@ -15,23 +15,6 @@ services:
     networks:
       - app-network
 
-  msinventario:
-    build:
-      context: ./msinventario
-      dockerfile: Dockerfile
-    container_name: msinventario_service
-    restart: always
-    ports:
-      - "8082:8082"
-    depends_on:
-      - db
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/duoc
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=84oL4mK6cM8w7SK
-    networks:
-      - app-network
-
   bff:
     build:
       context: ./bff
@@ -40,8 +23,6 @@ services:
     restart: always
     ports:
       - "8080:8080"
-    depends_on:
-      - msinventario
     environment:
       - MICROSERVICE_INVENTARIO_URL=http://msinventario:8082/api/inventario
     networks:
