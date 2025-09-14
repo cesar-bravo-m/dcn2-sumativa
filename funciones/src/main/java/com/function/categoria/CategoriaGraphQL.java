@@ -44,9 +44,13 @@ public class CategoriaGraphQL {
                             return databaseService.createCategoria(categoria);
                         })
                         .dataFetcher("updateCategoria", env -> {
+                            System.out.println("--- 1");
                             CategoriaDTO categoria = new CategoriaDTO();
+                            System.out.println("--- 2");
                             categoria.setId(Long.parseLong(env.getArgument("id")));
+                            System.out.println("--- 3:"+env.getArgument("id"));
                             categoria.setNombre(env.getArgument("nombre"));
+                            System.out.println("--- 4:"+env.getArgument("nombres"));
                             databaseService.updateCategoria(categoria);
                             return categoria;
                         })
