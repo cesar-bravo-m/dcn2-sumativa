@@ -1,36 +1,32 @@
-package com.function.producto;
+package com.function.categoria;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ProductoDTO {
+public class CategoriaDTO {
     
     @JsonProperty("id")
-    private Integer id;
+    private Long id;
     
     @JsonProperty("nombre")
     private String nombre;
-
-    @JsonProperty("categoria")
-    private Long categoria;
-
-
-    public ProductoDTO() {
+    
+    public CategoriaDTO() {
     }
     
-    public ProductoDTO(Integer id, String nombre) {
+    public CategoriaDTO(Long id, String nombre) {
         this.id = id;
         this.nombre = nombre;
     }
     
-    public ProductoDTO(String nombre) {
+    public CategoriaDTO(String nombre) {
         this.nombre = nombre;
     }
     
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
     
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
     
@@ -44,18 +40,10 @@ public class ProductoDTO {
     
     @Override
     public String toString() {
-        return "ProductoDTO{" +
+        return "CategoriaDTO{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 '}';
     }
-
-    public Long getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(Long categoria) {
-        this.categoria = categoria;
-    }
-
+    
 }

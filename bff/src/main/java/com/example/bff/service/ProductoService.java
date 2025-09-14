@@ -32,8 +32,8 @@ public class ProductoService {
         return response.getBody();
     }
     
-    public ProductoDto getProductoById(Integer id) {
-        String url = azureFunctionUrl + "?id=" + id;
+    public ProductoDto getProductoById(Long id) {
+        String url = azureFunctionUrl + "?id=" + Long.toString(id);
         return restTemplate.getForObject(url, ProductoDto.class);
     }
     
@@ -41,14 +41,14 @@ public class ProductoService {
         return restTemplate.postForObject(azureFunctionUrl, productoDto, ProductoDto.class);
     }
     
-    public ProductoDto updateProducto(Integer id, ProductoDto productoDto) {
-        String url = azureFunctionUrl + "?id=" + id;
+    public ProductoDto updateProducto(Long id, ProductoDto productoDto) {
+        String url = azureFunctionUrl + "?id=" + Long.toString(id);
         restTemplate.put(url, productoDto);
         return getProductoById(id);
     }
     
-    public void deleteProducto(Integer id) {
-        String url = azureFunctionUrl + "?id=" + id;
+    public void deleteProducto(Long id) {
+        String url = azureFunctionUrl + "?id=" + Long.toString(id);
         restTemplate.delete(url);
     }
 }

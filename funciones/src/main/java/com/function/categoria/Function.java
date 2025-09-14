@@ -1,4 +1,4 @@
-package com.function.bodega;
+package com.function.categoria;
 
 import java.util.Map;
 
@@ -27,14 +27,14 @@ public class Function {
         this.objectMapper.registerModule(new JavaTimeModule()); 
     }
     
-    @FunctionName("graphqlBodegas")
+    @FunctionName("graphqlCategorias")
     public HttpResponseMessage run(
             @HttpTrigger(name = "req", methods = {HttpMethod.POST}, authLevel = AuthorizationLevel.ANONYMOUS)
             HttpRequestMessage<Map<String, Object>> request,
             final ExecutionContext context) {
 
-        BodegaGraphQL bodegaGraphQL = new BodegaGraphQL();
-        GraphQL graphQL = bodegaGraphQL.getGraphQL();
+        CategoriaGraphQL categoriaGraphQL = new CategoriaGraphQL();
+        GraphQL graphQL = categoriaGraphQL.getGraphQL();
 
         String query = request.getBody().get("query").toString();
 
