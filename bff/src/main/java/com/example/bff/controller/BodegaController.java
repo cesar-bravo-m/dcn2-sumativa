@@ -2,6 +2,7 @@ package com.example.bff.controller;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,9 +27,11 @@ import com.example.bff.dto.RespuestaBodegas;
 public class BodegaController {
 
     private final WebClient webClient;
+    private final String azureFunctionUrl;
 
-    public BodegaController(WebClient.Builder builder) {
-        this.webClient = builder.baseUrl("http://localhost:7071/api/graphqlBodegas?").build();
+    public BodegaController(WebClient.Builder builder, @Value("${azure.functions.bodegas.url}") String azureFunctionUrl) {
+        this.webClient = builder.baseUrl(azureFunctionUrl).build();
+        this.azureFunctionUrl = azureFunctionUrl;
     }
 
     @GetMapping
