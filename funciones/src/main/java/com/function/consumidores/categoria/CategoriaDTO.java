@@ -1,4 +1,4 @@
-package com.function.categoria;
+package com.function.consumidores.categoria;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

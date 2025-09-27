@@ -1,4 +1,4 @@
-package com.function.producto;
+package com.function.consumidores.producto;
 
 import java.util.List;
 import java.util.Optional;

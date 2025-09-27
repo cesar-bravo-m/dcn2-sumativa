@@ -1,4 +1,4 @@
-package com.function.inventario;
+package com.function.consumidores.inventario;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

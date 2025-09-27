@@ -1,4 +1,4 @@
-package com.function.bodega;
+package com.function.consumidores.bodega;
 
 import java.util.Map;
 

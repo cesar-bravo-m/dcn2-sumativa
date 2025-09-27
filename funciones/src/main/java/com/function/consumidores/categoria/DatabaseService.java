@@ -1,4 +1,4 @@
-package com.function.categoria;
+package com.function.consumidores.categoria;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
