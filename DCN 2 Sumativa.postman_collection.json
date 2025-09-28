@@ -35,7 +35,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{uri_base}}/api/bodegas/1",
+							"raw": "http://{{uri_base}}/api/bodegas/5",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
@@ -43,7 +43,7 @@
 							"path": [
 								"api",
 								"bodegas",
-								"1"
+								"5"
 							]
 						}
 					},
@@ -89,10 +89,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\": 1,\n  \"nombre\": \"Bodega Actualizada\",\n  \"ubicacion\": \"Ubicacion Actualizada 789\"\n}"
+							"raw": "{\n  \"id\": 5,\n  \"nombre\": \"Bodega Actualizada\",\n  \"ubicacion\": \"Ubicacion Actualizada 789\"\n}"
 						},
 						"url": {
-							"raw": "http://{{uri_base}}/api/bodegas/1",
+							"raw": "http://{{uri_base}}/api/bodegas/5",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
@@ -100,7 +100,7 @@
 							"path": [
 								"api",
 								"bodegas",
-								"1"
+								"5"
 							]
 						}
 					},
@@ -112,7 +112,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://{{uri_base}}/api/bodegas/1",
+							"raw": "http://{{uri_base}}/api/bodegas/2",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
@@ -120,7 +120,7 @@
 							"path": [
 								"api",
 								"bodegas",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -156,7 +156,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{uri_base}}/api/productos/1",
+							"raw": "http://{{uri_base}}/api/productos/2",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
@@ -164,7 +164,7 @@
 							"path": [
 								"api",
 								"productos",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -210,10 +210,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\": 1,\n  \"nombre\": \"Producto Actualizado\",\n  \"categoria\": 1\n}"
+							"raw": "{\n  \"id\": 2,\n  \"nombre\": \"Producto Actualizado\",\n  \"categoria\": 1\n}"
 						},
 						"url": {
-							"raw": "http://{{uri_base}}/api/productos/1",
+							"raw": "http://{{uri_base}}/api/productos/2",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
@@ -221,7 +221,7 @@
 							"path": [
 								"api",
 								"productos",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -233,7 +233,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://{{uri_base}}/api/productos/1",
+							"raw": "http://{{uri_base}}/api/productos/18",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
@@ -241,7 +241,7 @@
 							"path": [
 								"api",
 								"productos",
-								"1"
+								"18"
 							]
 						}
 					},
@@ -308,7 +308,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"productoId\": 1,\n  \"bodegaId\": 1,\n  \"cantidad\": 50\n}"
+							"raw": "{\n  \"productoId\": 3,\n  \"bodegaId\": 3,\n  \"cantidad\": 50\n}"
 						},
 						"url": {
 							"raw": "http://{{uri_base}}/api/inventario",
@@ -336,10 +336,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\": 8,\n  \"productoId\": 2,\n  \"bodegaId\": 2,\n  \"cantidad\": 75\n}"
+							"raw": "{\n  \"id\": 12,\n  \"productoId\": 3,\n  \"bodegaId\": 3,\n  \"cantidad\": 75\n}"
 						},
 						"url": {
-							"raw": "http://{{uri_base}}/api/inventario/8",
+							"raw": "http://{{uri_base}}/api/inventario/12",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
@@ -347,7 +347,7 @@
 							"path": [
 								"api",
 								"inventario",
-								"8"
+								"12"
 							]
 						}
 					},
@@ -359,7 +359,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://{{uri_base}}/api/inventario/8",
+							"raw": "http://{{uri_base}}/api/inventario/12",
 							"protocol": "http",
 							"host": [
 								"{{uri_base}}"
@@ -367,7 +367,637 @@
 							"path": [
 								"api",
 								"inventario",
-								"8"
+								"12"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categoría",
+			"item": [
+				{
+					"name": "Get All Categorias",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{uri_base}}/api/categorias",
+							"protocol": "http",
+							"host": [
+								"{{uri_base}}"
+							],
+							"path": [
+								"api",
+								"categorias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categoria by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{uri_base}}/api/categorias/1",
+							"protocol": "http",
+							"host": [
+								"{{uri_base}}"
+							],
+							"path": [
+								"api",
+								"categorias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Categoria",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Prueba\"\n}"
+						},
+						"url": {
+							"raw": "http://{{uri_base}}/api/categorias",
+							"protocol": "http",
+							"host": [
+								"{{uri_base}}"
+							],
+							"path": [
+								"api",
+								"categorias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Categoria",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 11,\n  \"nombre\": \"Modificado\"\n}"
+						},
+						"url": {
+							"raw": "http://{{uri_base}}/api/categorias/11",
+							"protocol": "http",
+							"host": [
+								"{{uri_base}}"
+							],
+							"path": [
+								"api",
+								"categorias",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Categoria",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{uri_base}}/api/categorias/11",
+							"protocol": "http",
+							"host": [
+								"{{uri_base}}"
+							],
+							"path": [
+								"api",
+								"categorias",
+								"11"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Administración (generador)",
+			"item": [
+				{
+					"name": "Obtener bodegas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Bodega central\",\r\n    \"ubicacion\": \"Alameda 123\"\r\n}"
+						},
+						"url": {
+							"raw": "https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/generadorAdministracion/bodega",
+							"protocol": "https",
+							"host": [
+								"dcn-b5c9b6hvhcdbakek",
+								"eastus2-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"generadorAdministracion",
+								"bodega"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener bodega por  id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Bodega central\",\r\n    \"ubicacion\": \"Alameda 123\"\r\n}"
+						},
+						"url": {
+							"raw": "https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/generadorAdministracion/bodega",
+							"protocol": "https",
+							"host": [
+								"dcn-b5c9b6hvhcdbakek",
+								"eastus2-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"generadorAdministracion",
+								"bodega"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear bodega",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Bodega central\",\r\n    \"ubicacion\": \"Alameda 123\"\r\n}"
+						},
+						"url": {
+							"raw": "https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/generadorAdministracion/bodega",
+							"protocol": "https",
+							"host": [
+								"dcn-b5c9b6hvhcdbakek",
+								"eastus2-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"generadorAdministracion",
+								"bodega"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar bodega",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Bodega central\",\r\n    \"ubicacion\": \"Alameda 124\"\r\n}"
+						},
+						"url": {
+							"raw": "https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/generadorAdministracion/bodega?id=1",
+							"protocol": "https",
+							"host": [
+								"dcn-b5c9b6hvhcdbakek",
+								"eastus2-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"generadorAdministracion",
+								"bodega"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener categorías Copy",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Bodega central\",\r\n    \"ubicacion\": \"Alameda 123\"\r\n}"
+						},
+						"url": {
+							"raw": "https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/generadorAdministracion/categoria",
+							"protocol": "https",
+							"host": [
+								"dcn-b5c9b6hvhcdbakek",
+								"eastus2-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"generadorAdministracion",
+								"categoria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener categoría por id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Bodega central\",\r\n    \"ubicacion\": \"Alameda 123\"\r\n}"
+						},
+						"url": {
+							"raw": "https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/generadorAdministracion/categoria?id=1",
+							"protocol": "https",
+							"host": [
+								"dcn-b5c9b6hvhcdbakek",
+								"eastus2-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"generadorAdministracion",
+								"categoria"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear categoria",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"CategoriaNueva\"\r\n}"
+						},
+						"url": {
+							"raw": "https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/generadorAdministracion/categoria",
+							"protocol": "https",
+							"host": [
+								"dcn-b5c9b6hvhcdbakek",
+								"eastus2-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"generadorAdministracion",
+								"categoria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar categoría",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"CategoriaNuevaActualizada\"\r\n}"
+						},
+						"url": {
+							"raw": "https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/generadorAdministracion/categoria?id=1",
+							"protocol": "https",
+							"host": [
+								"dcn-b5c9b6hvhcdbakek",
+								"eastus2-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"generadorAdministracion",
+								"categoria"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener productos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Bodega central\",\r\n    \"ubicacion\": \"Alameda 123\"\r\n}"
+						},
+						"url": {
+							"raw": "https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/generadorAdministracion/producto",
+							"protocol": "https",
+							"host": [
+								"dcn-b5c9b6hvhcdbakek",
+								"eastus2-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"generadorAdministracion",
+								"producto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener productos Copy",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Bodega central\",\r\n    \"ubicacion\": \"Alameda 123\"\r\n}"
+						},
+						"url": {
+							"raw": "https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/generadorAdministracion/producto?id=1",
+							"protocol": "https",
+							"host": [
+								"dcn-b5c9b6hvhcdbakek",
+								"eastus2-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"generadorAdministracion",
+								"producto"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear producto",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Prueba3\",\r\n    \"categoria\": 1\r\n}"
+						},
+						"url": {
+							"raw": "https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/generadorAdministracion/producto",
+							"protocol": "https",
+							"host": [
+								"dcn-b5c9b6hvhcdbakek",
+								"eastus2-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"generadorAdministracion",
+								"producto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar producto",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Prueba3Actualizado\",\r\n    \"categoria\": 1\r\n}"
+						},
+						"url": {
+							"raw": "https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/generadorAdministracion/producto?id=3",
+							"protocol": "https",
+							"host": [
+								"dcn-b5c9b6hvhcdbakek",
+								"eastus2-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"generadorAdministracion",
+								"producto"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Recepción Productos (generador)",
+			"item": [
+				{
+					"name": "Recibir productos (graphql)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"query\": \"mutation { recibirProductos(input: { productoId: 1, bodegaId: 1, cantidad: 50 }) { success message inventario { productoId bodegaId cantidad } } }\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/RecepcionProductos",
+							"protocol": "https",
+							"host": [
+								"dcn-b5c9b6hvhcdbakek",
+								"eastus2-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"RecepcionProductos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Registro Venta (graphql)",
+			"item": [
+				{
+					"name": "Registrar venta (graphql)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"query\": \"mutation { procesarVenta(input: { productoId: 1, bodegaId: 1, cantidad: 1 }) { success message inventario { productoId bodegaId cantidad } } }\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://dcn-b5c9b6hvhcdbakek.eastus2-01.azurewebsites.net/api/generadorVentas",
+							"protocol": "https",
+							"host": [
+								"dcn-b5c9b6hvhcdbakek",
+								"eastus2-01",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"generadorVentas"
 							]
 						}
 					},
