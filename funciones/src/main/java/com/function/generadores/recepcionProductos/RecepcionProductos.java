@@ -1,4 +1,4 @@
-package com.function.generadores.registroVenta;
+package com.function.generadores.recepcionProductos;
 
 import java.util.Map;
 
@@ -14,16 +14,16 @@ import com.microsoft.azure.functions.annotation.HttpTrigger;
 import graphql.ExecutionInput;
 import graphql.GraphQL;
 
-public class GeneradorVentas {
+public class RecepcionProductos {
     
-    @FunctionName("generadorVentas")
+    @FunctionName("RecepcionProductos")
     public HttpResponseMessage run(
             @HttpTrigger(name = "req", methods = {HttpMethod.POST}, authLevel = AuthorizationLevel.ANONYMOUS)
             HttpRequestMessage<Map<String, Object>> request,
             final ExecutionContext context) {
 
-        VentasGraphQL ventasGraphQL = new VentasGraphQL();
-        GraphQL graphQL = ventasGraphQL.getGraphQL();
+        RecepcionGraphQL recepcionGraphQL = new RecepcionGraphQL();
+        GraphQL graphQL = recepcionGraphQL.getGraphQL();
 
         String query = request.getBody().get("query").toString();
 

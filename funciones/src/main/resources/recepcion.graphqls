@@ -1,0 +1,35 @@
+type Query {
+    recepcionProductos: [RecepcionProducto]
+    recepcionProducto(id: ID!): RecepcionProducto
+}
+
+type Mutation {
+    recibirProductos(input: RecepcionInput!): RecepcionResponse!
+}
+
+type RecepcionProducto {
+    id: ID!
+    productoId: Int!
+    bodegaId: Int!
+    cantidad: Int!
+    fechaRecepcion: String!
+}
+
+input RecepcionInput {
+    productoId: Int!
+    bodegaId: Int!
+    cantidad: Int!
+}
+
+type RecepcionResponse {
+    success: Boolean!
+    message: String!
+    inventario: Inventario
+}
+
+type Inventario {
+    id: ID!
+    productoId: Int!
+    bodegaId: Int!
+    cantidad: Int!
+}

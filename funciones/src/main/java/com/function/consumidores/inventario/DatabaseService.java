@@ -8,18 +8,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.function.shared.DatabaseConfig;
+
 public class DatabaseService {
     
-    private static final String DB_URL = "jdbc:postgresql://20.81.136.128:5432/duoc";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "84oL4mK6cM8w7SK";
     
     public List<InventarioDTO> getAllInventarios() throws SQLException {
         List<InventarioDTO> inventarios = new ArrayList<>();
         
         String sql = "SELECT id, producto_id, bodega_id, cantidad FROM inventario ORDER BY id";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.DB_URL, DatabaseConfig.DB_USER, DatabaseConfig.DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             
@@ -34,7 +33,7 @@ public class DatabaseService {
     public InventarioDTO getInventarioById(Integer inventarioId) throws SQLException {
         String sql = "SELECT id, producto_id, bodega_id, cantidad FROM inventario WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.DB_URL, DatabaseConfig.DB_USER, DatabaseConfig.DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, inventarioId);
@@ -53,7 +52,7 @@ public class DatabaseService {
         
         String sql = "SELECT id, producto_id, bodega_id, cantidad FROM inventario WHERE producto_id = ? ORDER BY id";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.DB_URL, DatabaseConfig.DB_USER, DatabaseConfig.DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, productoId);
@@ -72,7 +71,7 @@ public class DatabaseService {
         
         String sql = "SELECT id, producto_id, bodega_id, cantidad FROM inventario WHERE bodega_id = ? ORDER BY id";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.DB_URL, DatabaseConfig.DB_USER, DatabaseConfig.DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, bodegaId);
@@ -89,7 +88,7 @@ public class DatabaseService {
     public InventarioDTO createInventario(InventarioDTO inventario) throws SQLException {
         String sql = "INSERT INTO inventario (producto_id, bodega_id, cantidad) VALUES (?, ?, ?) RETURNING id";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.DB_URL, DatabaseConfig.DB_USER, DatabaseConfig.DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, inventario.getProductoId());
@@ -111,7 +110,7 @@ public class DatabaseService {
     public boolean updateInventario(InventarioDTO inventario) throws SQLException {
         String sql = "UPDATE inventario SET producto_id = ?, bodega_id = ?, cantidad = ? WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.DB_URL, DatabaseConfig.DB_USER, DatabaseConfig.DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             System.out.println("### 1");
@@ -132,7 +131,7 @@ public class DatabaseService {
     public boolean deleteInventario(Integer inventarioId) throws SQLException {
         String sql = "DELETE FROM inventario WHERE id = ?";
         
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.DB_URL, DatabaseConfig.DB_USER, DatabaseConfig.DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, inventarioId);
@@ -151,9 +150,27 @@ public class DatabaseService {
         return inventario;
     }
     
+    public InventarioDTO getInventarioByProductoAndBodega(Integer productoId, Integer bodegaId) throws SQLException {
+        String sql = "SELECT id, producto_id, bodega_id, cantidad FROM inventario WHERE producto_id = ? AND bodega_id = ?";
+        
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.DB_URL, DatabaseConfig.DB_USER, DatabaseConfig.DB_PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, productoId);
+            stmt.setInt(2, bodegaId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return mapResultSetToInventario(rs);
+            }
+        }
+        
+        return null;
+    }
+    
     public boolean testConnection() {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            return conn.isValid(5);
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.DB_URL, DatabaseConfig.DB_USER, DatabaseConfig.DB_PASSWORD)) {
+            return conn.isValid(DatabaseConfig.DB_CONNECTION_TIMEOUT);
         } catch (SQLException e) {
             return false;
         }

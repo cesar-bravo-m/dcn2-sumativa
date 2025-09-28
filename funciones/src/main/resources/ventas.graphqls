@@ -1,0 +1,35 @@
+type Query {
+    ventas: [Venta]
+    venta(id: ID!): Venta
+}
+
+type Mutation {
+    procesarVenta(input: VentaInput!): VentaResponse!
+}
+
+type Venta {
+    id: ID!
+    productoId: Int!
+    bodegaId: Int!
+    cantidad: Int!
+    fechaVenta: String!
+}
+
+input VentaInput {
+    productoId: Int!
+    bodegaId: Int!
+    cantidad: Int!
+}
+
+type VentaResponse {
+    success: Boolean!
+    message: String!
+    inventario: Inventario
+}
+
+type Inventario {
+    id: ID!
+    productoId: Int!
+    bodegaId: Int!
+    cantidad: Int!
+}

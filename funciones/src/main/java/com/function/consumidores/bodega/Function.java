@@ -1,53 +1,133 @@
 package com.function.consumidores.bodega;
 
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.microsoft.azure.functions.ExecutionContext;
-import com.microsoft.azure.functions.HttpMethod;
-import com.microsoft.azure.functions.HttpRequestMessage;
-import com.microsoft.azure.functions.HttpResponseMessage;
-import com.microsoft.azure.functions.HttpStatus;
-import com.microsoft.azure.functions.annotation.AuthorizationLevel;
+import com.microsoft.azure.functions.annotation.EventGridTrigger;
 import com.microsoft.azure.functions.annotation.FunctionName;
-import com.microsoft.azure.functions.annotation.HttpTrigger;
-
-import graphql.ExecutionInput;
-import graphql.GraphQL;
 
 public class Function {
     
-    private final DatabaseService databaseService;
     private final ObjectMapper objectMapper;
+    private final DatabaseService databaseService;
     
     public Function() {
-        this.databaseService = new DatabaseService();
         this.objectMapper = new ObjectMapper();
-        this.objectMapper.registerModule(new JavaTimeModule()); 
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.databaseService = new DatabaseService();
     }
     
-    @FunctionName("graphqlBodegas")
-    public HttpResponseMessage run(
-            @HttpTrigger(name = "req", methods = {HttpMethod.POST}, authLevel = AuthorizationLevel.ANONYMOUS)
-            HttpRequestMessage<Map<String, Object>> request,
-            final ExecutionContext context) {
+    @FunctionName("Bodegas")
+    public void run(
+        @EventGridTrigger(name = "eventGridTrigger") String content,
+        final ExecutionContext context
+    ) {
 
-        BodegaGraphQL bodegaGraphQL = new BodegaGraphQL();
-        GraphQL graphQL = bodegaGraphQL.getGraphQL();
+        context.getLogger().info("Event Grid message received: " + content);
+        
+        try {
+            if (!databaseService.testConnection()) {
+                context.getLogger().severe("Error connecting to database");
+                return;
+            }
 
-        String query = request.getBody().get("query").toString();
+            Gson gson = new Gson();
+            JsonObject eventGridEvent = gson.fromJson(content, JsonObject.class);
+            context.getLogger().info("Parsed Event Grid event: " + eventGridEvent.toString());
 
-        ExecutionInput executionInput = ExecutionInput.newExecutionInput()
-                .query(query)
-                .build();
-
-        Map<String, Object> result = graphQL.execute(executionInput).toSpecification();
-
-        return request.createResponseBuilder(HttpStatus.OK)
-                .header("Content-Type", "application/json")
-                .body(result)
-                .build();
+            String eventType = eventGridEvent.get("eventType").getAsString();
+            context.getLogger().info("Event Type: " + eventType);
+            
+            JsonObject dataObject = eventGridEvent.get("data").getAsJsonObject();
+            context.getLogger().info("Event data: " + dataObject.toString());
+            
+            if (eventType.equals("Administracion.CrearBodega")) {
+                handleCreateBodega(dataObject, context);
+            } else if (eventType.equals("Administracion.ActualizarBodega")) {
+                handleUpdateBodega(dataObject, context);
+            } else {
+                context.getLogger().warning("Unknown event type: " + eventType);
+            }
+            
+        } catch (Exception e) {
+            context.getLogger().severe("Error processing Event Grid message: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private void handleCreateBodega(JsonObject bodegaData, ExecutionContext context) {
+        try {
+            context.getLogger().info("Processing bodega creation event");
+            
+            BodegaDTO bodega = objectMapper.readValue(bodegaData.toString(), BodegaDTO.class);
+            context.getLogger().info("Bodega to create: " + bodega.toString());
+            
+            if (bodega.getNombre() == null || bodega.getNombre().trim().isEmpty()) {
+                context.getLogger().severe("Bodega name is required for creation");
+                return;
+            }
+            
+            if (bodega.getUbicacion() == null || bodega.getUbicacion().trim().isEmpty()) {
+                context.getLogger().severe("Bodega ubicacion is required for creation");
+                return;
+            }
+            
+            BodegaDTO createdBodega = databaseService.createBodega(bodega);
+            
+            if (createdBodega != null) {
+                context.getLogger().info("Bodega created successfully: " + createdBodega.toString());
+            } else {
+                context.getLogger().severe("Failed to create bodega in database");
+            }
+            
+        } catch (Exception e) {
+            context.getLogger().severe("Error creating bodega: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private void handleUpdateBodega(JsonObject bodegaData, ExecutionContext context) {
+        try {
+            context.getLogger().info("Processing bodega update event");
+            
+            BodegaDTO bodega = objectMapper.readValue(bodegaData.toString(), BodegaDTO.class);
+            context.getLogger().info("Bodega to update: " + bodega.toString());
+            
+            if (bodega.getId() == null) {
+                context.getLogger().severe("Bodega ID is required for update");
+                return;
+            }
+            
+            if (bodega.getNombre() == null || bodega.getNombre().trim().isEmpty()) {
+                context.getLogger().severe("Bodega name is required for update");
+                return;
+            }
+            
+            if (bodega.getUbicacion() == null || bodega.getUbicacion().trim().isEmpty()) {
+                context.getLogger().severe("Bodega ubicacion is required for update");
+                return;
+            }
+            
+            BodegaDTO existingBodega = databaseService.getBodegaById(bodega.getId());
+            if (existingBodega == null) {
+                context.getLogger().severe("Bodega not found with ID: " + bodega.getId());
+                return;
+            }
+            
+            boolean updated = databaseService.updateBodega(bodega);
+            
+            if (updated) {
+                context.getLogger().info("Bodega updated successfully: " + bodega.toString());
+            } else {
+                context.getLogger().severe("Failed to update bodega in database");
+            }
+            
+        } catch (Exception e) {
+            context.getLogger().severe("Error updating bodega: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 }

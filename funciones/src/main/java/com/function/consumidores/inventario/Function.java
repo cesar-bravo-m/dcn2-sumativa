@@ -1,18 +1,13 @@
 package com.function.consumidores.inventario;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.function.shared.DatabaseConfig;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.microsoft.azure.functions.ExecutionContext;
-import com.microsoft.azure.functions.HttpMethod;
-import com.microsoft.azure.functions.HttpRequestMessage;
-import com.microsoft.azure.functions.HttpResponseMessage;
-import com.microsoft.azure.functions.HttpStatus;
-import com.microsoft.azure.functions.annotation.AuthorizationLevel;
+import com.microsoft.azure.functions.annotation.EventGridTrigger;
 import com.microsoft.azure.functions.annotation.FunctionName;
-import com.microsoft.azure.functions.annotation.HttpTrigger;
 
 public class Function {
     
@@ -26,291 +21,143 @@ public class Function {
     }
     
     @FunctionName("Inventario")
-    public HttpResponseMessage run(
-            @HttpTrigger(
-                name = "req",
-                methods = {HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE},
-                authLevel = AuthorizationLevel.ANONYMOUS)
-                HttpRequestMessage<Optional<String>> request,
-            final ExecutionContext context) {
-        context.getLogger().info("Procesando solicitud HTTP de Java para Inventarios.");
+    public void run(
+        @EventGridTrigger(name = "eventGridTrigger") String content,
+        final ExecutionContext context
+    ) {
 
+        context.getLogger().info("Event Grid message received: " + content);
+        
         try {
             if (!databaseService.testConnection()) {
-                context.getLogger().severe("Error al conectar con la base de datos");
-                return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error de conexión con la base de datos")
-                    .build();
+                context.getLogger().severe("Error connecting to database");
+                return;
+            }
+
+            Gson gson = new Gson();
+            JsonObject eventGridEvent = gson.fromJson(content, JsonObject.class);
+            context.getLogger().info("Parsed Event Grid event: " + eventGridEvent.toString());
+
+            String eventType = eventGridEvent.get("eventType").getAsString();
+            context.getLogger().info("Event Type: " + eventType);
+            
+            JsonObject dataObject = eventGridEvent.get("data").getAsJsonObject();
+            context.getLogger().info("Event data: " + dataObject.toString());
+            
+            if (eventType.equals(DatabaseConfig.EVENT_TYPE_RECIBIR_PRODUCTOS)) {
+                handleRecibirProductos(dataObject, context);
+            } else if (eventType.equals(DatabaseConfig.EVENT_TYPE_PROCESAR_VENTA)) {
+                handleProcesarVenta(dataObject, context);
+            } else {
+                context.getLogger().warning("Unknown event type: " + eventType);
             }
             
-            String method = request.getHttpMethod().name();
-            context.getLogger().info("Método HTTP: " + method);
-            
-            switch (method) {
-                case "GET":
-                    return handleGet(request, context);
-                case "POST":
-                    return handlePost(request, context);
-                case "PUT":
-                    return handlePut(request, context);
-                case "DELETE":
-                    return handleDelete(request, context);
-                default:
-                    return request.createResponseBuilder(HttpStatus.METHOD_NOT_ALLOWED)
-                        .body("Método no permitido")
-                        .build();
-            }
-                
         } catch (Exception e) {
-            context.getLogger().severe("Error procesando solicitud: " + e.getMessage());
-            
-            return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + e.getMessage())
-                .build();
+            context.getLogger().severe("Error processing Event Grid message: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     
-    private HttpResponseMessage handleGet(HttpRequestMessage<Optional<String>> request, 
-                                        ExecutionContext context) throws Exception {
-        String idParam = request.getQueryParameters().get("id");
-        String productoIdParam = request.getQueryParameters().get("productoId");
-        String bodegaIdParam = request.getQueryParameters().get("bodegaId");
-        
-        if (idParam != null && !idParam.isEmpty()) {
-            // Get inventario by ID
-            try {
-                Integer inventarioId = Integer.parseInt(idParam);
-                InventarioDTO inventario = databaseService.getInventarioById(inventarioId);
+    private void handleRecibirProductos(JsonObject inventarioData, ExecutionContext context) {
+        try {
+            context.getLogger().info("Processing product reception event");
+            
+            InventarioDTO inventario = objectMapper.readValue(inventarioData.toString(), InventarioDTO.class);
+            context.getLogger().info("Inventory data to process: " + inventario.toString());
+            
+            if (inventario.getProductoId() == null) {
+                context.getLogger().severe("Product ID is required for inventory update");
+                return;
+            }
+            
+            if (inventario.getBodegaId() == null) {
+                context.getLogger().severe("Bodega ID is required for inventory update");
+                return;
+            }
+            
+            if (inventario.getCantidad() == null || inventario.getCantidad() <= 0) {
+                context.getLogger().severe("Valid quantity is required for inventory update");
+                return;
+            }
+            
+            InventarioDTO existingInventario = databaseService.getInventarioByProductoAndBodega(
+                inventario.getProductoId(), inventario.getBodegaId());
+            
+            if (existingInventario != null) {
+                existingInventario.setCantidad(existingInventario.getCantidad() + inventario.getCantidad());
+                boolean updated = databaseService.updateInventario(existingInventario);
                 
-                if (inventario != null) {
-                    String jsonResponse = objectMapper.writeValueAsString(inventario);
-                    return request.createResponseBuilder(HttpStatus.OK)
-                        .header("Content-Type", "application/json")
-                        .body(jsonResponse)
-                        .build();
+                if (updated) {
+                    context.getLogger().info("Inventory updated successfully: " + existingInventario.toString());
                 } else {
-                    return request.createResponseBuilder(HttpStatus.NOT_FOUND)
-                        .body("Inventario no encontrado con ID: " + inventarioId)
-                        .build();
+                    context.getLogger().severe("Failed to update inventory in database");
                 }
-            } catch (NumberFormatException e) {
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("Formato de ID de inventario inválido")
-                    .build();
-            }
-        } else if (productoIdParam != null && !productoIdParam.isEmpty()) {
-            // Get inventarios by producto ID
-            try {
-                Integer productoId = Integer.parseInt(productoIdParam);
-                List<InventarioDTO> inventarios = databaseService.getInventariosByProductoId(productoId);
-                context.getLogger().info("Recuperados " + inventarios.size() + " inventarios para producto ID: " + productoId);
+            } else {
+                InventarioDTO createdInventario = databaseService.createInventario(inventario);
                 
-                String jsonResponse = objectMapper.writeValueAsString(inventarios);
-                return request.createResponseBuilder(HttpStatus.OK)
-                    .header("Content-Type", "application/json")
-                    .body(jsonResponse)
-                    .build();
-            } catch (NumberFormatException e) {
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("Formato de ID de producto inválido")
-                    .build();
+                if (createdInventario != null) {
+                    context.getLogger().info("New inventory created successfully: " + createdInventario.toString());
+                } else {
+                    context.getLogger().severe("Failed to create new inventory in database");
+                }
             }
-        } else if (bodegaIdParam != null && !bodegaIdParam.isEmpty()) {
-            // Get inventarios by bodega ID
-            try {
-                Integer bodegaId = Integer.parseInt(bodegaIdParam);
-                List<InventarioDTO> inventarios = databaseService.getInventariosByBodegaId(bodegaId);
-                context.getLogger().info("Recuperados " + inventarios.size() + " inventarios para bodega ID: " + bodegaId);
+            
+        } catch (Exception e) {
+            context.getLogger().severe("Error processing inventory update: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private void handleProcesarVenta(JsonObject inventarioData, ExecutionContext context) {
+        try {
+            context.getLogger().info("Processing sales event");
+            
+            InventarioDTO inventario = objectMapper.readValue(inventarioData.toString(), InventarioDTO.class);
+            context.getLogger().info("Sales data to process: " + inventario.toString());
+            
+            if (inventario.getProductoId() == null) {
+                context.getLogger().severe("Product ID is required for sales processing");
+                return;
+            }
+            
+            if (inventario.getBodegaId() == null) {
+                context.getLogger().severe("Bodega ID is required for sales processing");
+                return;
+            }
+            
+            if (inventario.getCantidad() == null || inventario.getCantidad() <= 0) {
+                context.getLogger().severe("Valid quantity is required for sales processing");
+                return;
+            }
+            
+            InventarioDTO existingInventario = databaseService.getInventarioByProductoAndBodega(
+                inventario.getProductoId(), inventario.getBodegaId());
+            
+            if (existingInventario != null) {
+                int newQuantity = existingInventario.getCantidad() - inventario.getCantidad();
                 
-                String jsonResponse = objectMapper.writeValueAsString(inventarios);
-                return request.createResponseBuilder(HttpStatus.OK)
-                    .header("Content-Type", "application/json")
-                    .body(jsonResponse)
-                    .build();
-            } catch (NumberFormatException e) {
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("Formato de ID de bodega inválido")
-                    .build();
-            }
-        } else {
-            // Get all inventarios
-            List<InventarioDTO> inventarios = databaseService.getAllInventarios();
-            context.getLogger().info("Recuperados " + inventarios.size() + " inventarios de la base de datos");
-            
-            String jsonResponse = objectMapper.writeValueAsString(inventarios);
-            return request.createResponseBuilder(HttpStatus.OK)
-                .header("Content-Type", "application/json")
-                .body(jsonResponse)
-                .build();
-        }
-    }
-    
-    private HttpResponseMessage handlePost(HttpRequestMessage<Optional<String>> request, 
-                                         ExecutionContext context) throws Exception {
-        System.out.println("### 1");
-        Optional<String> body = request.getBody();
-        System.out.println("### 2");
-        if (!body.isPresent()) {
-            System.out.println("### 3");
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("Se requiere cuerpo de solicitud")
-                .build();
-        }
-        System.out.println("### 4");
-        
-        try {
-            InventarioDTO inventario = objectMapper.readValue(body.get(), InventarioDTO.class);
-            System.out.println("### 5");
-            
-            // Validate required fields
-            if (inventario.getProductoId() == null) {
-                System.out.println("### 6");
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("productoId es requerido")
-                    .build();
-            }
-            if (inventario.getBodegaId() == null) {
-                System.out.println("### 7");
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("bodegaId es requerido")
-                    .build();
-            }
-            if (inventario.getCantidad() == null) {
-                System.out.println("### 8");
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("cantidad es requerida")
-                    .build();
-            }
-            if (inventario.getCantidad() < 0) {
-                System.out.println("### 9");
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("cantidad no puede ser negativa")
-                    .build();
-            }
-            
-            System.out.println("### 10");
-            InventarioDTO createdInventario = databaseService.createInventario(inventario);
-            System.out.println("### 11");
-            
-            if (createdInventario != null) {
-                System.out.println("### 12");
-                String jsonResponse = objectMapper.writeValueAsString(createdInventario);
-                System.out.println("### 13");
-                return request.createResponseBuilder(HttpStatus.CREATED)
-                    .header("Content-Type", "application/json")
-                    .body(jsonResponse)
-                    .build();
+                if (newQuantity < 0) {
+                    context.getLogger().severe("Insufficient inventory. Available: " + existingInventario.getCantidad() + 
+                        ", Requested: " + inventario.getCantidad());
+                    return;
+                }
+                
+                existingInventario.setCantidad(newQuantity);
+                boolean updated = databaseService.updateInventario(existingInventario);
+                
+                if (updated) {
+                    context.getLogger().info("Inventory reduced successfully: " + existingInventario.toString());
+                } else {
+                    context.getLogger().severe("Failed to update inventory in database");
+                }
             } else {
-                System.out.println("### 14");
-                return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al crear inventario")
-                    .build();
+                context.getLogger().severe("No inventory found for product " + inventario.getProductoId() + 
+                    " in bodega " + inventario.getBodegaId());
             }
+            
         } catch (Exception e) {
-            System.out.println("### 15");
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("Formato JSON inválido: " + e.getMessage())
-                .build();
-        }
-    }
-    
-    private HttpResponseMessage handlePut(HttpRequestMessage<Optional<String>> request, 
-                                        ExecutionContext context) throws Exception {
-        String idParam = request.getQueryParameters().get("id");
-        
-        if (idParam == null || idParam.isEmpty()) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("PUT requiere ID en parámetro de consulta: ?id={id}")
-                .build();
-        }
-        
-        try {
-            Integer inventarioId = Integer.parseInt(idParam);
-            Optional<String> body = request.getBody();
-            
-            if (!body.isPresent()) {
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("Se requiere cuerpo de solicitud")
-                    .build();
-            }
-            
-            InventarioDTO inventario = objectMapper.readValue(body.get(), InventarioDTO.class);
-            inventario.setId(inventarioId);
-            
-            // Validate required fields
-            if (inventario.getProductoId() == null) {
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("productoId es requerido")
-                    .build();
-            }
-            if (inventario.getBodegaId() == null) {
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("bodegaId es requerido")
-                    .build();
-            }
-            if (inventario.getCantidad() == null) {
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("cantidad es requerida")
-                    .build();
-            }
-            if (inventario.getCantidad() < 0) {
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("cantidad no puede ser negativa")
-                    .build();
-            }
-            
-            boolean updated = databaseService.updateInventario(inventario);
-            
-            if (updated) {
-                InventarioDTO updatedInventario = databaseService.getInventarioById(inventarioId);
-                String jsonResponse = objectMapper.writeValueAsString(updatedInventario);
-                return request.createResponseBuilder(HttpStatus.OK)
-                    .header("Content-Type", "application/json")
-                    .body(jsonResponse)
-                    .build();
-            } else {
-                return request.createResponseBuilder(HttpStatus.NOT_FOUND)
-                    .body("Inventario no encontrado con ID: " + inventarioId)
-                    .build();
-            }
-        } catch (NumberFormatException e) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("Formato de ID de inventario inválido")
-                .build();
-        } catch (Exception e) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("Formato JSON inválido: " + e.getMessage())
-                .build();
-        }
-    }
-    
-    private HttpResponseMessage handleDelete(HttpRequestMessage<Optional<String>> request, 
-                                           ExecutionContext context) throws Exception {
-        String idParam = request.getQueryParameters().get("id");
-        
-        if (idParam == null || idParam.isEmpty()) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("DELETE requiere ID en parámetro de consulta: ?id={id}")
-                .build();
-        }
-        
-        try {
-            Integer inventarioId = Integer.parseInt(idParam);
-            boolean deleted = databaseService.deleteInventario(inventarioId);
-            
-            if (deleted) {
-                return request.createResponseBuilder(HttpStatus.NO_CONTENT)
-                    .body("Inventario eliminado exitosamente")
-                    .build();
-            } else {
-                return request.createResponseBuilder(HttpStatus.NOT_FOUND)
-                    .body("Inventario no encontrado con ID: " + inventarioId)
-                    .build();
-            }
-        } catch (NumberFormatException e) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("Formato de ID de inventario inválido")
-                .build();
+            context.getLogger().severe("Error processing sales: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

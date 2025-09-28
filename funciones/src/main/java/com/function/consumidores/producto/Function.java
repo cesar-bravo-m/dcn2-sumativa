@@ -1,18 +1,12 @@
 package com.function.consumidores.producto;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.microsoft.azure.functions.ExecutionContext;
-import com.microsoft.azure.functions.HttpMethod;
-import com.microsoft.azure.functions.HttpRequestMessage;
-import com.microsoft.azure.functions.HttpResponseMessage;
-import com.microsoft.azure.functions.HttpStatus;
-import com.microsoft.azure.functions.annotation.AuthorizationLevel;
+import com.microsoft.azure.functions.annotation.EventGridTrigger;
 import com.microsoft.azure.functions.annotation.FunctionName;
-import com.microsoft.azure.functions.annotation.HttpTrigger;
 
 public class Function {
     
@@ -26,209 +20,113 @@ public class Function {
     }
     
     @FunctionName("Productos")
-    public HttpResponseMessage run(
-            @HttpTrigger(
-                name = "req",
-                methods = {HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE},
-                authLevel = AuthorizationLevel.ANONYMOUS)
-                HttpRequestMessage<Optional<String>> request,
-            final ExecutionContext context) {
-        context.getLogger().info("Procesando solicitud HTTP de Java para Productos.");
+    public void run(
+        @EventGridTrigger(name = "eventGridTrigger") String content,
+        final ExecutionContext context
+    ) {
 
+        context.getLogger().info("Event Grid message received: " + content);
+        
         try {
             if (!databaseService.testConnection()) {
-                context.getLogger().severe("Error al conectar con la base de datos");
-                return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error de conexión con la base de datos")
-                    .build();
+                context.getLogger().severe("Error connecting to database");
+                return;
             }
-            
-            String method = request.getHttpMethod().name();
-            context.getLogger().info("Método HTTP: " + method);
-            
-            switch (method) {
-                case "GET":
-                    return handleGet(request, context);
-                case "POST":
-                    return handlePost(request, context);
-                case "PUT":
-                    return handlePut(request, context);
-                case "DELETE":
-                    return handleDelete(request, context);
-                default:
-                    return request.createResponseBuilder(HttpStatus.METHOD_NOT_ALLOWED)
-                        .body("Método no permitido")
-                        .build();
-            }
-                
-        } catch (Exception e) {
-            context.getLogger().severe("Error procesando solicitud: " + e.getMessage());
-            e.printStackTrace();
-            
-            return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + e.getMessage())
-                .build();
-        }
-    }
-    
-    private HttpResponseMessage handleGet(HttpRequestMessage<Optional<String>> request, 
-                                        ExecutionContext context) throws Exception {
-        String idParam = request.getQueryParameters().get("id");
-        
-        if (idParam != null && !idParam.isEmpty()) {
-            try {
-                Integer productoId = Integer.parseInt(idParam);
-                ProductoDTO producto = databaseService.getProductoById(productoId);
 
-                System.out.println(producto);
-                
-                if (producto != null) {
-                    String jsonResponse = objectMapper.writeValueAsString(producto);
-                    return request.createResponseBuilder(HttpStatus.OK)
-                        .header("Content-Type", "application/json")
-                        .body(jsonResponse)
-                        .build();
-                } else {
-                    return request.createResponseBuilder(HttpStatus.NOT_FOUND)
-                        .body("Producto no encontrado con ID: " + productoId)
-                        .build();
-                }
-            } catch (NumberFormatException e) {
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("Formato de ID de producto inválido")
-                    .build();
-            }
-        } else {
-            List<ProductoDTO> productos = databaseService.getAllProductos();
-            context.getLogger().info("Recuperados " + productos.size() + " productos de la base de datos");
+            Gson gson = new Gson();
+            JsonObject eventGridEvent = gson.fromJson(content, JsonObject.class);
+            context.getLogger().info("Parsed Event Grid event: " + eventGridEvent.toString());
+
+            String eventType = eventGridEvent.get("eventType").getAsString();
+            context.getLogger().info("Event Type: " + eventType);
             
-            String jsonResponse = objectMapper.writeValueAsString(productos);
-            return request.createResponseBuilder(HttpStatus.OK)
-                .header("Content-Type", "application/json")
-                .body(jsonResponse)
-                .build();
+            JsonObject dataObject = eventGridEvent.get("data").getAsJsonObject();
+            context.getLogger().info("Event data: " + dataObject.toString());
+            
+            if (eventType.equals("Administracion.CrearProducto")) {
+                handleCreateProduct(dataObject, context);
+            } else if (eventType.equals("Administracion.ActualizarProducto")) {
+                handleUpdateProduct(dataObject, context);
+            } else {
+                context.getLogger().warning("Unknown event type: " + eventType);
+            }
+            
+        } catch (Exception e) {
+            context.getLogger().severe("Error processing Event Grid message: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     
-    private HttpResponseMessage handlePost(HttpRequestMessage<Optional<String>> request, 
-                                         ExecutionContext context) throws Exception {
-        Optional<String> body = request.getBody();
-        if (!body.isPresent()) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("Se requiere cuerpo de solicitud")
-                .build();
-        }
-        
+    private void handleCreateProduct(JsonObject productData, ExecutionContext context) {
         try {
-            ProductoDTO producto = objectMapper.readValue(body.get(), ProductoDTO.class);
+            context.getLogger().info("Processing product creation event");
+            
+            ProductoDTO producto = objectMapper.readValue(productData.toString(), ProductoDTO.class);
+            context.getLogger().info("Product to create: " + producto.toString());
             
             if (producto.getNombre() == null || producto.getNombre().trim().isEmpty()) {
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("nombre es requerido")
-                    .build();
+                context.getLogger().severe("Product name is required for creation");
+                return;
+            }
+            
+            if (producto.getCategoria() == null) {
+                context.getLogger().severe("Product category is required for creation");
+                return;
             }
             
             ProductoDTO createdProducto = databaseService.createProducto(producto);
             
             if (createdProducto != null) {
-                String jsonResponse = objectMapper.writeValueAsString(createdProducto);
-                return request.createResponseBuilder(HttpStatus.CREATED)
-                    .header("Content-Type", "application/json")
-                    .body(jsonResponse)
-                    .build();
+                context.getLogger().info("Product created successfully: " + createdProducto.toString());
             } else {
-                return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al crear producto")
-                    .build();
+                context.getLogger().severe("Failed to create product in database");
             }
+            
         } catch (Exception e) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("Formato JSON inválido: " + e.getMessage())
-                .build();
+            context.getLogger().severe("Error creating product: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     
-    private HttpResponseMessage handlePut(HttpRequestMessage<Optional<String>> request, 
-                                        ExecutionContext context) throws Exception {
-        String idParam = request.getQueryParameters().get("id");
-        
-        if (idParam == null || idParam.isEmpty()) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("PUT requiere ID en parámetro de consulta: ?id={id}")
-                .build();
-        }
-        
+    private void handleUpdateProduct(JsonObject productData, ExecutionContext context) {
         try {
-            Integer productoId = Integer.parseInt(idParam);
-            Optional<String> body = request.getBody();
+            context.getLogger().info("Processing product update event");
             
-            if (!body.isPresent()) {
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("Se requiere cuerpo de solicitud")
-                    .build();
+            ProductoDTO producto = objectMapper.readValue(productData.toString(), ProductoDTO.class);
+            context.getLogger().info("Product to update: " + producto.toString());
+            
+            if (producto.getId() == null) {
+                context.getLogger().severe("Product ID is required for update");
+                return;
             }
             
-            ProductoDTO producto = objectMapper.readValue(body.get(), ProductoDTO.class);
-            producto.setId(productoId);
-            
             if (producto.getNombre() == null || producto.getNombre().trim().isEmpty()) {
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("nombre es requerido")
-                    .build();
+                context.getLogger().severe("Product name is required for update");
+                return;
+            }
+            
+            if (producto.getCategoria() == null) {
+                context.getLogger().severe("Product category is required for update");
+                return;
+            }
+            
+            ProductoDTO existingProduct = databaseService.getProductoById(producto.getId());
+            if (existingProduct == null) {
+                context.getLogger().severe("Product not found with ID: " + producto.getId());
+                return;
             }
             
             boolean updated = databaseService.updateProducto(producto);
             
             if (updated) {
-                ProductoDTO updatedProducto = databaseService.getProductoById(productoId);
-                String jsonResponse = objectMapper.writeValueAsString(updatedProducto);
-                return request.createResponseBuilder(HttpStatus.OK)
-                    .header("Content-Type", "application/json")
-                    .body(jsonResponse)
-                    .build();
+                context.getLogger().info("Product updated successfully: " + producto.toString());
             } else {
-                return request.createResponseBuilder(HttpStatus.NOT_FOUND)
-                    .body("Producto no encontrado con ID: " + productoId)
-                    .build();
+                context.getLogger().severe("Failed to update product in database");
             }
-        } catch (NumberFormatException e) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("Formato de ID de producto inválido")
-                .build();
-        } catch (Exception e) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("Formato JSON inválido: " + e.getMessage())
-                .build();
-        }
-    }
-    
-    private HttpResponseMessage handleDelete(HttpRequestMessage<Optional<String>> request, 
-                                           ExecutionContext context) throws Exception {
-        String idParam = request.getQueryParameters().get("id");
-        
-        if (idParam == null || idParam.isEmpty()) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("DELETE requiere ID en parámetro de consulta: ?id={id}")
-                .build();
-        }
-        
-        try {
-            Integer productoId = Integer.parseInt(idParam);
-            boolean deleted = databaseService.deleteProducto(productoId);
             
-            if (deleted) {
-                return request.createResponseBuilder(HttpStatus.NO_CONTENT)
-                    .body("Producto eliminado exitosamente")
-                    .build();
-            } else {
-                return request.createResponseBuilder(HttpStatus.NOT_FOUND)
-                    .body("Producto no encontrado con ID: " + productoId)
-                    .build();
-            }
-        } catch (NumberFormatException e) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("Formato de ID de producto inválido")
-                .build();
+        } catch (Exception e) {
+            context.getLogger().severe("Error updating product: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

@@ -27,13 +27,6 @@ public class BodegaGraphQL {
 
         // 2. Definir resolvers (queries y mutations)
         RuntimeWiring wiring = RuntimeWiring.newRuntimeWiring()
-                .type("Query", builder -> builder
-                        .dataFetcher("bodegas", env -> databaseService.getAllBodegas())
-                        .dataFetcher("bodegaById", env -> {
-                            Long id = Long.parseLong(env.getArgument("id"));
-                            return databaseService.getBodegaById(id);
-                        })
-                )
                 .type("Mutation", builder -> builder
                         .dataFetcher("createBodega", env -> {
                             BodegaDTO bodega = new BodegaDTO();

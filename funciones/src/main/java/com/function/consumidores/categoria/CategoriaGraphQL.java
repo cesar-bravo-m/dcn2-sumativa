@@ -27,13 +27,6 @@ public class CategoriaGraphQL {
 
         // 2. Definir resolvers (queries y mutations)
         RuntimeWiring wiring = RuntimeWiring.newRuntimeWiring()
-                .type("Query", builder -> builder
-                        .dataFetcher("categoria", env -> databaseService.getAllCategorias())
-                        .dataFetcher("categoriaById", env -> {
-                            Long id = Long.parseLong(env.getArgument("id"));
-                            return databaseService.getCategoriaById(id);
-                        })
-                )
                 .type("Mutation", builder -> builder
                         .dataFetcher("createCategoria", env -> {
                             System.out.println("=== 1");
