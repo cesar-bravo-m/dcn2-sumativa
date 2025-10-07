@@ -1,16 +1,18 @@
 package com.example.bff.controller;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 
@@ -31,50 +33,52 @@ public class AdministracionController {
         }
 
         @GetMapping("/bodegas/{id}")
-        public String getBodegaById(@RequestBody Long id) {
-                ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/bodega", String.class);
+        public String getBodegaById(@PathVariable Long id) {
+                ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/bodega?id="+id, String.class);
                 return response.getBody();
 
         }
 
         @PostMapping("/bodegas")
         public String setBodega(@RequestBody String entity) {
-                ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/bodega", String.class);
+                ResponseEntity<String> response = restTemplate.postForEntity(azureFunctionUrl+"/bodega", entity, String.class);
                 return response.getBody();
 
         }
 
         @PutMapping("/bodega/{id}")
         public String updateBodega(@PathVariable Long id, @RequestBody String entity) {
-                ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/bodega", String.class);
+                HttpEntity<String> httpEntity = new HttpEntity<>(entity);
+                ResponseEntity<String> response = restTemplate.exchange(azureFunctionUrl+"/bodega?id="+id, HttpMethod.PUT, httpEntity, String.class);
                 return response.getBody();
 
         }
 
         @GetMapping("/categoria")
-        public String getCtegorias() {
+        public String getCategorias() {
                 ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/categoria", String.class);
                 return response.getBody();
 
         }
 
         @GetMapping("/categoria/{id}")
-        public String getCategoriaById(@RequestBody Long id) {
-                ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/categoria", String.class);
+        public String getCategoriaById(@PathVariable Long id) {
+                ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/categoria?id="+id, String.class);
                 return response.getBody();
 
         }
 
         @PostMapping("/categoria")
         public String setCategoria(@RequestBody String entity) {
-                ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/categoria", String.class);
+                ResponseEntity<String> response = restTemplate.postForEntity(azureFunctionUrl+"/categoria", entity, String.class);
                 return response.getBody();
 
         }
 
         @PutMapping("/categoria/{id}")
         public String updateCategoria(@PathVariable Long id, @RequestBody String entity) {
-                ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/categoria", String.class);
+                HttpEntity<String> httpEntity = new HttpEntity<>(entity);
+                ResponseEntity<String> response = restTemplate.exchange(azureFunctionUrl+"/categoria?id="+id, HttpMethod.PUT, httpEntity, String.class);
                 return response.getBody();
 
         }
@@ -87,22 +91,23 @@ public class AdministracionController {
         }
 
         @GetMapping("/producto/{id}")
-        public String getProdutoById(@RequestBody Long id) {
-                ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/producto", String.class);
+        public String getProductoById(@PathVariable Long id) {
+                ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/producto?id="+id, String.class);
                 return response.getBody();
 
         }
 
         @PostMapping("/producto")
         public String setProducto(@RequestBody String entity) {
-                ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/producto", String.class);
+                ResponseEntity<String> response = restTemplate.postForEntity(azureFunctionUrl+"/producto", entity, String.class);
                 return response.getBody();
 
         }
         
         @PutMapping("/producto/{id}")
         public String updateProducto(@PathVariable Long id, @RequestBody String entity) {
-                ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/producto", String.class);
+                HttpEntity<String> httpEntity = new HttpEntity<>(entity);
+                ResponseEntity<String> response = restTemplate.exchange(azureFunctionUrl+"/producto?id="+id, HttpMethod.PUT, httpEntity, String.class);
                 return response.getBody();
 
         }
