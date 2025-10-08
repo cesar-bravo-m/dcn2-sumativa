@@ -110,10 +110,10 @@ public class AdministracionController {
                 return response.getBody();
         }
 
-        @DeleteMapping("/producto/{id}")
-        public String deleteProducto(@PathVariable Long id, @RequestBody String entity) {
+        @DeleteMapping("/bodega/{id}")
+        public String deleteBodega(@PathVariable Long id, @RequestBody String entity) {
                 HttpEntity<String> httpEntity = new HttpEntity<>(entity);
-                ResponseEntity<String> response = restTemplate.exchange(azureFunctionUrl+"/producto?id="+id, HttpMethod.DELETE, httpEntity, String.class);
+                ResponseEntity<String> response = restTemplate.exchange(azureFunctionUrl+"/bodega?id="+id, HttpMethod.DELETE, httpEntity, String.class);
                 return response.getBody();
 
         }
