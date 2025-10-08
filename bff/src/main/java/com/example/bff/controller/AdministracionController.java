@@ -282,6 +282,25 @@ public class AdministracionController {
                 }
         }
 
+        @GetMapping("/inventario")
+        public ResponseEntity<String> getInventarios() {
+                try {
+                        logger.info("Obteniendo lista de inventarios");
+                        ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/inventario", String.class);
+                        String sortedResponse = sortJsonArrayById(response.getBody());
+                        logger.info("Lista de inventarios obtenida exitosamente");
+                        return ResponseEntity.ok(sortedResponse);
+                } catch (RestClientException e) {
+                        logger.error("Error al obtener inventarios desde Azure Function: {}", e.getMessage());
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body("{\"error\":\"Error interno del servidor al obtener inventarios\"}");
+                } catch (Exception e) {
+                        logger.error("Error inesperado al obtener inventarios: {}", e.getMessage());
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body("{\"error\":\"Error inesperado al procesar la solicitud\"}");
+                }
+        }
+
         /**
          * Ordena un array JSON por el campo 'id' de forma ascendente
          */

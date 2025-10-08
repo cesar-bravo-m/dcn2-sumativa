@@ -16,6 +16,7 @@ import com.azure.messaging.eventgrid.EventGridPublisherClient;
 import com.azure.messaging.eventgrid.EventGridPublisherClientBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.function.consumidores.inventario.InventarioDTO;
 import com.function.shared.DatabaseConfig;
 import com.microsoft.azure.functions.ExecutionContext;
 import com.microsoft.azure.functions.HttpMethod;
@@ -51,12 +52,14 @@ public class Administracion {
                 entityType = "categoria";
             } else if (uri.contains("/bodega")) {
                 entityType = "bodega";
+            } else if (uri.contains("/inventario")) {
+                entityType = "inventario";
             }
         }
         
         if (entityType == null) {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                .body("Entity type is required. Use path /generadorAdministracion/producto, /generadorAdministracion/categoria, or /generadorAdministracion/bodega")
+                .body("Entity type is required. Use path /generadorAdministracion/producto, /generadorAdministracion/categoria, /generadorAdministracion/bodega, or /generadorAdministracion/inventario")
                 .build();
         }
         
@@ -69,9 +72,11 @@ public class Administracion {
                 return handleCategoriaRequests(request, context);
             } else if (entityType.equals("bodega")) {
                 return handleBodegaRequests(request, context);
+            } else if (entityType.equals("inventario")) {
+                return handleInventarioRequests(request, context);
             } else {
                 return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                    .body("Invalid entity type. Use 'producto', 'categoria', or 'bodega'")
+                    .body("Invalid entity type. Use 'producto', 'categoria', 'bodega', or 'inventario'")
                     .build();
             }
         } catch (Exception e) {
@@ -122,6 +127,16 @@ public class Administracion {
         } else {
             return request.createResponseBuilder(HttpStatus.METHOD_NOT_ALLOWED)
                 .body("Method not allowed. Use GET, POST, PUT, or DELETE for bodega.")
+                .build();
+        }
+    }
+    
+    private HttpResponseMessage handleInventarioRequests(HttpRequestMessage<Optional<String>> request, ExecutionContext context) throws Exception {
+        if (request.getHttpMethod() == HttpMethod.GET) {
+            return handleInventarioGet(request, context);
+        } else {
+            return request.createResponseBuilder(HttpStatus.METHOD_NOT_ALLOWED)
+                .body("Method not allowed. Use GET for inventario.")
                 .build();
         }
     }
@@ -412,6 +427,29 @@ public class Administracion {
         }
     }
     
+    private HttpResponseMessage handleInventarioGet(HttpRequestMessage<Optional<String>> request, ExecutionContext context) throws Exception {
+        context.getLogger().info("Processing GET request for inventarios");
+        
+        try {
+            List<InventarioDTO> inventarios = getAllInventarios();
+            String jsonResponse = objectMapper.writeValueAsString(inventarios);
+            return request.createResponseBuilder(HttpStatus.OK)
+                .header("Content-Type", "application/json")
+                .body(jsonResponse)
+                .build();
+        } catch (SQLException e) {
+            context.getLogger().severe("Database error getting inventarios: " + e.getMessage());
+            return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Database error: " + e.getMessage())
+                .build();
+        } catch (Exception e) {
+            context.getLogger().severe("Error getting inventarios: " + e.getMessage());
+            return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error getting inventarios: " + e.getMessage())
+                .build();
+        }
+    }
+    
     private HttpResponseMessage handleBodegaPost(HttpRequestMessage<Optional<String>> request, ExecutionContext context) throws Exception {
         context.getLogger().info("Processing POST request to create new bodega");
         
@@ -668,6 +706,33 @@ public class Administracion {
         bodega.setUbicacion(rs.getString("ubicacion"));
         
         return bodega;
+    }
+    
+    private List<InventarioDTO> getAllInventarios() throws SQLException {
+        List<InventarioDTO> inventarios = new ArrayList<>();
+        
+        String sql = "SELECT id, producto_id, bodega_id, cantidad FROM inventario ORDER BY id";
+        
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.DB_URL, DatabaseConfig.DB_USER, DatabaseConfig.DB_PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                inventarios.add(mapResultSetToInventario(rs));
+            }
+        }
+        
+        return inventarios;
+    }
+    
+    private InventarioDTO mapResultSetToInventario(ResultSet rs) throws SQLException {
+        InventarioDTO inventario = new InventarioDTO();
+        inventario.setId(rs.getInt("id"));
+        inventario.setProductoId(rs.getInt("producto_id"));
+        inventario.setBodegaId(rs.getInt("bodega_id"));
+        inventario.setCantidad(rs.getInt("cantidad"));
+        
+        return inventario;
     }
     
     private void sendEventToGrid(String eventType, Object entity, ExecutionContext context) throws Exception {
