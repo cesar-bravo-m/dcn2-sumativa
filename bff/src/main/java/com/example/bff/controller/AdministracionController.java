@@ -33,19 +33,19 @@ public class AdministracionController {
 
         }
 
-        @GetMapping("/bodegas/{id}")
-        public String getBodegaById(@PathVariable Long id) {
-                ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/bodega?id="+id, String.class);
-                return response.getBody();
+	@GetMapping("/bodega/{id}")
+	public String getBodegaById(@PathVariable Long id) {
+		ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/bodega?id="+id, String.class);
+		return response.getBody();
 
-        }
+	}
 
-        @PostMapping("/bodegas")
-        public String setBodega(@RequestBody String entity) {
-                ResponseEntity<String> response = restTemplate.postForEntity(azureFunctionUrl+"/bodega", entity, String.class);
-                return response.getBody();
+	@PostMapping("/bodega")
+	public String setBodega(@RequestBody String entity) {
+		ResponseEntity<String> response = restTemplate.postForEntity(azureFunctionUrl+"/bodega", entity, String.class);
+		return response.getBody();
 
-        }
+	}
 
         @PutMapping("/bodega/{id}")
         public String updateBodega(@PathVariable Long id, @RequestBody String entity) {
