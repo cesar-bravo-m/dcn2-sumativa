@@ -527,7 +527,6 @@ public class Administracion {
         }
         
         try {
-            // Create a BodegaDTO with just the ID for the delete event
             BodegaDTO bodegaToDelete = new BodegaDTO();
             bodegaToDelete.setId(bodegaId);
             

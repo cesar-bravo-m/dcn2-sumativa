@@ -144,7 +144,6 @@ public class Function {
                 return;
             }
             
-            // Check if bodega exists before attempting deletion
             BodegaDTO existingBodega = databaseService.getBodegaById(bodega.getId());
             if (existingBodega == null) {
                 context.getLogger().severe("Bodega not found with ID: " + bodega.getId());
