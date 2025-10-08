@@ -282,6 +282,24 @@ public class AdministracionController {
                 }
         }
 
+        @DeleteMapping("/producto/{id}")
+        public ResponseEntity<String> deleteProducto(@PathVariable Long id) {
+                try {
+                        logger.info("Eliminando producto con ID: {}", id);
+                        ResponseEntity<String> response = restTemplate.exchange(azureFunctionUrl+"/producto?id="+id, HttpMethod.DELETE, null, String.class);
+                        logger.info("Producto con ID {} eliminado exitosamente", id);
+                        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+                } catch (RestClientException e) {
+                        logger.error("Error al eliminar producto con ID {}: {}", id, e.getMessage());
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body("{\"error\":\"Error interno del servidor al eliminar el producto\"}");
+                } catch (Exception e) {
+                        logger.error("Error inesperado al eliminar producto con ID {}: {}", id, e.getMessage());
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body("{\"error\":\"Error inesperado al procesar la solicitud\"}");
+                }
+        }
+
         @GetMapping("/inventario")
         public ResponseEntity<String> getInventarios() {
                 try {

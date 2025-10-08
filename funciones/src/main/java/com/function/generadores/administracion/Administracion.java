@@ -94,9 +94,11 @@ public class Administracion {
             return handleProductoPost(request, context);
         } else if (request.getHttpMethod() == HttpMethod.PUT) {
             return handleProductoPut(request, context);
+        } else if (request.getHttpMethod() == HttpMethod.DELETE) {
+            return handleProductoDelete(request, context);
         } else {
             return request.createResponseBuilder(HttpStatus.METHOD_NOT_ALLOWED)
-                .body("Method not allowed. Use GET, POST, or PUT for producto.")
+                .body("Method not allowed. Use GET, POST, PUT, or DELETE for producto.")
                 .build();
         }
     }
@@ -340,6 +342,61 @@ public class Administracion {
             context.getLogger().severe("Error parsing product JSON: " + e.getMessage());
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
                 .body("Invalid JSON format: " + e.getMessage())
+                .build();
+        }
+    }
+    
+    private HttpResponseMessage handleProductoDelete(HttpRequestMessage<Optional<String>> request, ExecutionContext context) throws Exception {
+        context.getLogger().info("Processing DELETE request to delete producto");
+        
+        String idParam = request.getQueryParameters().get("id");
+        if (idParam == null || idParam.isEmpty()) {
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
+                .body("DELETE requiere ID del producto en parámetro de consulta: ?id={id}")
+                .build();
+        }
+        
+        Integer productoId;
+        try {
+            productoId = Integer.parseInt(idParam);
+        } catch (NumberFormatException e) {
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
+                .body("Formato de ID de producto inválido")
+                .build();
+        }
+        
+        try {
+            ProductoDTO existingProducto = getProductoById(productoId);
+            if (existingProducto == null) {
+                return request.createResponseBuilder(HttpStatus.NOT_FOUND)
+                    .body("Producto no encontrado con ID: " + productoId)
+                    .build();
+            }
+            
+            boolean inventarioDeleted = deleteInventariosByProductoId(productoId);
+            context.getLogger().info("Eliminados registros de inventario para el producto ID " + productoId + ": " + inventarioDeleted);
+            
+            boolean productoDeleted = deleteProductoById(productoId);
+            
+            if (productoDeleted) {
+                return request.createResponseBuilder(HttpStatus.OK)
+                    .body("Producto y registros de inventario relacionados eliminados exitosamente")
+                    .build();
+            } else {
+                return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al eliminar el producto")
+                    .build();
+            }
+                
+        } catch (SQLException e) {
+            context.getLogger().severe("Database error deleting producto: " + e.getMessage());
+            return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error de base de datos: " + e.getMessage())
+                .build();
+        } catch (Exception e) {
+            context.getLogger().severe("Error deleting producto: " + e.getMessage());
+            return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error procesando solicitud de eliminación: " + e.getMessage())
                 .build();
         }
     }
@@ -733,6 +790,30 @@ public class Administracion {
         inventario.setCantidad(rs.getInt("cantidad"));
         
         return inventario;
+    }
+    
+    private boolean deleteInventariosByProductoId(Integer productoId) throws SQLException {
+        String sql = "DELETE FROM inventario WHERE producto_id = ?";
+        
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.DB_URL, DatabaseConfig.DB_USER, DatabaseConfig.DB_PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, productoId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected >= 0; // Return true even if no rows were deleted (no inventario records existed)
+        }
+    }
+    
+    private boolean deleteProductoById(Integer productoId) throws SQLException {
+        String sql = "DELETE FROM producto WHERE id = ?";
+        
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.DB_URL, DatabaseConfig.DB_USER, DatabaseConfig.DB_PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, productoId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        }
     }
     
     private void sendEventToGrid(String eventType, Object entity, ExecutionContext context) throws Exception {
