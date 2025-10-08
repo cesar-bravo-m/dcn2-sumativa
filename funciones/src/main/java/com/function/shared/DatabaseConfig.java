@@ -15,6 +15,7 @@ public class DatabaseConfig {
     public static final String EVENT_TYPE_ACTUALIZAR_CATEGORIA = "Administracion.ActualizarCategoria";
     public static final String EVENT_TYPE_CREAR_BODEGA = "Administracion.CrearBodega";
     public static final String EVENT_TYPE_ACTUALIZAR_BODEGA = "Administracion.ActualizarBodega";
+    public static final String EVENT_TYPE_ELIMINAR_BODEGA = "Administracion.EliminarBodega";
     public static final String EVENT_TYPE_RECIBIR_PRODUCTOS = "RecepcionProductos.RecibirProductos";
     public static final String EVENT_TYPE_PROCESAR_VENTA = "GeneradorVentas.ProcesarVenta";
     

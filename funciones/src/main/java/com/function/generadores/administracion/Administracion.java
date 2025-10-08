@@ -37,7 +37,7 @@ public class Administracion {
     
     @FunctionName("generadorAdministracion")
     public HttpResponseMessage run(
-            @HttpTrigger(name = "req", methods = {HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT}, authLevel = AuthorizationLevel.ANONYMOUS, route = "generadorAdministracion/{entityType}") HttpRequestMessage<Optional<String>> request,
+            @HttpTrigger(name = "req", methods = {HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE}, authLevel = AuthorizationLevel.ANONYMOUS, route = "generadorAdministracion/{entityType}") HttpRequestMessage<Optional<String>> request,
             final ExecutionContext context) {
         
         context.getLogger().info("Java HTTP trigger processed a request - Method: " + request.getHttpMethod());
@@ -117,9 +117,11 @@ public class Administracion {
             return handleBodegaPost(request, context);
         } else if (request.getHttpMethod() == HttpMethod.PUT) {
             return handleBodegaPut(request, context);
+        } else if (request.getHttpMethod() == HttpMethod.DELETE) {
+            return handleBodegaDelete(request, context);
         } else {
             return request.createResponseBuilder(HttpStatus.METHOD_NOT_ALLOWED)
-                .body("Method not allowed. Use GET, POST, or PUT for bodega.")
+                .body("Method not allowed. Use GET, POST, PUT, or DELETE for bodega.")
                 .build();
         }
     }
@@ -501,6 +503,44 @@ public class Administracion {
             context.getLogger().severe("Error parsing bodega JSON: " + e.getMessage());
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
                 .body("Invalid JSON format: " + e.getMessage())
+                .build();
+        }
+    }
+    
+    private HttpResponseMessage handleBodegaDelete(HttpRequestMessage<Optional<String>> request, ExecutionContext context) throws Exception {
+        context.getLogger().info("Processing DELETE request to delete bodega");
+        
+        String idParam = request.getQueryParameters().get("id");
+        if (idParam == null || idParam.isEmpty()) {
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
+                .body("DELETE requires bodega ID in query parameter: ?id={id}")
+                .build();
+        }
+        
+        Long bodegaId;
+        try {
+            bodegaId = Long.parseLong(idParam);
+        } catch (NumberFormatException e) {
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
+                .body("Invalid bodega ID format")
+                .build();
+        }
+        
+        try {
+            // Create a BodegaDTO with just the ID for the delete event
+            BodegaDTO bodegaToDelete = new BodegaDTO();
+            bodegaToDelete.setId(bodegaId);
+            
+            sendEventToGrid(DatabaseConfig.EVENT_TYPE_ELIMINAR_BODEGA, bodegaToDelete, context);
+            
+            return request.createResponseBuilder(HttpStatus.ACCEPTED)
+                .body("Bodega deletion event sent successfully")
+                .build();
+                
+        } catch (Exception e) {
+            context.getLogger().severe("Error sending bodega deletion event: " + e.getMessage());
+            return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error processing deletion request: " + e.getMessage())
                 .build();
         }
     }

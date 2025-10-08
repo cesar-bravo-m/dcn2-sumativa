@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.function.consumidores.inventario.InventarioDTO;
 import com.function.shared.DatabaseConfig;
 
 public class DatabaseService {
@@ -74,6 +75,41 @@ public class DatabaseService {
                 producto.setNombre(rs.getString("nombre"));
                 producto.setCategoria(rs.getLong("categoria"));
                 return producto;
+            }
+        }
+        
+        return null;
+    }
+    
+    public Integer getFirstAvailableBodegaId() throws SQLException {
+        String sql = "SELECT id FROM bodega ORDER BY id ASC LIMIT 1";
+        
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.DB_URL, DatabaseConfig.DB_USER, DatabaseConfig.DB_PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        }
+        
+        return null;
+    }
+    
+    public InventarioDTO createInventario(InventarioDTO inventario) throws SQLException {
+        String sql = "INSERT INTO inventario (producto_id, bodega_id, cantidad) VALUES (?, ?, ?) RETURNING id";
+        
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.DB_URL, DatabaseConfig.DB_USER, DatabaseConfig.DB_PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, inventario.getProductoId());
+            stmt.setInt(2, inventario.getBodegaId());
+            stmt.setInt(3, inventario.getCantidad());
+            
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                inventario.setId(rs.getInt("id"));
+                return inventario;
             }
         }
         

@@ -47,6 +47,8 @@ public class Function {
                 handleCreateBodega(dataObject, context);
             } else if (eventType.equals("Administracion.ActualizarBodega")) {
                 handleUpdateBodega(dataObject, context);
+            } else if (eventType.equals("Administracion.EliminarBodega")) {
+                handleDeleteBodega(dataObject, context);
             } else {
                 context.getLogger().warning("Unknown event type: " + eventType);
             }
@@ -126,6 +128,39 @@ public class Function {
             
         } catch (Exception e) {
             context.getLogger().severe("Error updating bodega: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private void handleDeleteBodega(JsonObject bodegaData, ExecutionContext context) {
+        try {
+            context.getLogger().info("Processing bodega deletion event");
+            
+            BodegaDTO bodega = objectMapper.readValue(bodegaData.toString(), BodegaDTO.class);
+            context.getLogger().info("Bodega to delete: " + bodega.toString());
+            
+            if (bodega.getId() == null) {
+                context.getLogger().severe("Bodega ID is required for deletion");
+                return;
+            }
+            
+            // Check if bodega exists before attempting deletion
+            BodegaDTO existingBodega = databaseService.getBodegaById(bodega.getId());
+            if (existingBodega == null) {
+                context.getLogger().severe("Bodega not found with ID: " + bodega.getId());
+                return;
+            }
+            
+            boolean deleted = databaseService.deleteBodega(bodega.getId());
+            
+            if (deleted) {
+                context.getLogger().info("Bodega deleted successfully with ID: " + bodega.getId() + ". Associated inventario records were also deleted.");
+            } else {
+                context.getLogger().severe("Failed to delete bodega from database");
+            }
+            
+        } catch (Exception e) {
+            context.getLogger().severe("Error deleting bodega: " + e.getMessage());
             e.printStackTrace();
         }
     }

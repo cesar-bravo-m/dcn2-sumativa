@@ -2,6 +2,7 @@ package com.function.consumidores.producto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.function.consumidores.inventario.InventarioDTO;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.microsoft.azure.functions.ExecutionContext;
@@ -78,6 +79,25 @@ public class Function {
             
             if (createdProducto != null) {
                 context.getLogger().info("Product created successfully: " + createdProducto.toString());
+                
+                try {
+                    Integer firstBodegaId = databaseService.getFirstAvailableBodegaId();
+                    if (firstBodegaId != null) {
+                        InventarioDTO inventario = new InventarioDTO(createdProducto.getId(), firstBodegaId, 50);
+                        InventarioDTO createdInventario = databaseService.createInventario(inventario);
+                        
+                        if (createdInventario != null) {
+                            context.getLogger().info("Inventario created successfully for product: " + createdInventario.toString());
+                        } else {
+                            context.getLogger().warning("Failed to create inventario entry for product ID: " + createdProducto.getId());
+                        }
+                    } else {
+                        context.getLogger().warning("No bodegas available to create inventario entry for product ID: " + createdProducto.getId());
+                    }
+                } catch (Exception e) {
+                    context.getLogger().severe("Error creating inventario entry: " + e.getMessage());
+                    e.printStackTrace();
+                }
             } else {
                 context.getLogger().severe("Failed to create product in database");
             }
