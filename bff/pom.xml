@@ -53,7 +53,6 @@
 
 	<build>
 		<plugins>
-			<!-- Ensure compilation target is Java 21 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
