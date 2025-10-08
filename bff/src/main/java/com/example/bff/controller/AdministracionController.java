@@ -5,6 +5,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -94,20 +95,25 @@ public class AdministracionController {
         public String getProductoById(@PathVariable Long id) {
                 ResponseEntity<String> response = restTemplate.getForEntity(azureFunctionUrl+"/producto?id="+id, String.class);
                 return response.getBody();
-
         }
 
         @PostMapping("/producto")
         public String setProducto(@RequestBody String entity) {
                 ResponseEntity<String> response = restTemplate.postForEntity(azureFunctionUrl+"/producto", entity, String.class);
                 return response.getBody();
-
         }
         
         @PutMapping("/producto/{id}")
         public String updateProducto(@PathVariable Long id, @RequestBody String entity) {
                 HttpEntity<String> httpEntity = new HttpEntity<>(entity);
                 ResponseEntity<String> response = restTemplate.exchange(azureFunctionUrl+"/producto?id="+id, HttpMethod.PUT, httpEntity, String.class);
+                return response.getBody();
+        }
+
+        @DeleteMapping("/producto/{id}")
+        public String deleteProducto(@PathVariable Long id, @RequestBody String entity) {
+                HttpEntity<String> httpEntity = new HttpEntity<>(entity);
+                ResponseEntity<String> response = restTemplate.exchange(azureFunctionUrl+"/producto?id="+id, HttpMethod.DELETE, httpEntity, String.class);
                 return response.getBody();
 
         }
