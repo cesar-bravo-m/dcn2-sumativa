@@ -56,9 +56,8 @@ public class AdministracionController {
         }
 
         @DeleteMapping("/bodega/{id}")
-        public String deleteBodega(@PathVariable Long id, @RequestBody String entity) {
-                HttpEntity<String> httpEntity = new HttpEntity<>(entity);
-                ResponseEntity<String> response = restTemplate.exchange(azureFunctionUrl+"/bodega?id="+id, HttpMethod.DELETE, httpEntity, String.class);
+        public String deleteBodega(@PathVariable Long id) {
+                ResponseEntity<String> response = restTemplate.exchange(azureFunctionUrl+"/bodega?id="+id, HttpMethod.DELETE, null, String.class);
                 return response.getBody();
         }
 
